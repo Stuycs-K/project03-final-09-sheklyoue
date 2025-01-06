@@ -2,28 +2,30 @@
 
 ## Group Members:
 
-names here.
+Lawrence Shek, Li Han You
        
 # Intentions:
 
-A statement of the problem you are solving and/or a high level description of the project.
+To create a simple chat server that allows multiple users to log on with a username and send messages to everyone else connected to the server. Some extra features we will implement are private chats, private chat rooms, a list of all chat members. 
     
 # Intended usage:
+Have users communicate with other users in the server. Also allow users to privately message each other and create and use group chats. 
 
-A description as to how the project will be used (describe the user interface).
-  
-# Technical Details:
+# Technical Design  
+The server will make use of processes (forking), pipes (maybe sockets if time permits) to send messages back and forth between users, shared memory to keep track of the messages and all the users connected, and and signals for users to disconnect from the server.
 
-A description of your technical design. This should include:
-   
-How you will be using the topics covered in class in the project.
-     
-How you are breaking down the project and who is responsible for which parts.
-  
-What data structures you will be using and how.
-     
-What algorithms and /or data structures you will be using, and how.
+The data structures involved will probably be pretty simple, using arrays to keep track of all the users and chat history.
     
 # Intended pacing:
 
-A timeline with expected completion dates of parts of the project.
+#### 1/7-1/9
+Set up project structure, working communication between server and single user.
+
+#### 1/10-1/13
+Implement multiple users connect to server and send messages back and forth.
+
+#### 1/14-1/17
+Build interface for users to view all other users connected to server, and implement private messaging between users. 
+
+#### 1/19-1/21
+Small additional features like keeping track of message history between users. 
