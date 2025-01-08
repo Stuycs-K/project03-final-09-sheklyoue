@@ -10,13 +10,20 @@
 #ifndef NETWORKING_H
 #define NETWORKING_H
 
+struct user {
+  char username[100];
+}
+
 int server_setup();
 void view_users();
 int create_user();
 void create_chat();
 int send_public_message();
-int send_private_message();
-void connect();
+//int send_private_message();
+//void connect();
+void print_chat();
+void clear_terminal();
+
 
 
 #endif
