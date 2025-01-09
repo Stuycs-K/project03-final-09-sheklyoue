@@ -12,11 +12,17 @@
 #ifndef FUNCTIONS_H
 #define FUNCTIONS_H
 
+#define BUFFER_SIZE 1000
+#define WKP "lawric"
+
 struct user {
   char username[100];
 };
 
-void server_setup();
+int server_setup();
+int server_handshake(int *to_client);
+int client_handshake(int *to_server);
+
 void view_users();
 void create_user();
 void create_chat();
