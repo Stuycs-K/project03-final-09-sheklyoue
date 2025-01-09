@@ -15,8 +15,9 @@ void view_users();
 int create_user();
 void create_chat();
 int send_public_message();
-int send_private_message();
+int send_private_message();g
 void connect();
 
+//functions to add later
 
 #endif
