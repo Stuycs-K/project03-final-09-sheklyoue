@@ -13,18 +13,17 @@ int main() {
     int from_client;
     signal(SIGINT, sighandler);
     while (1) {
-        printf("Waiting for a client\n");
-        from_client = server_handshake( &to_client );
-        printf("Connected to a client \n");
+        printf("Waiting for a client ...\n");
+        from_client = server_setup();
+        printf("Connected to a client!\n");
 
         char buffer[BUFFER_SIZE];
         int bytes;
         while (bytes = read(from_client, buffer, sizeof(buffer))) {
             printf("bytes read: %d\n", bytes);
+            printf("Server message : %s\n", buffer);
             write(to_client, buffer, sizeof(buffer));
         }
-
-        printf("Handshake done!\n\n\n");
         close(from_client);
         close(to_client);
     }
