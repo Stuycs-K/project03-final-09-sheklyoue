@@ -16,8 +16,19 @@ void view_users() {
 }
 
 //Prints the chat on the terminal
-void print_chat() {
-    
+void print_chat(char *filename) {
+    FILE *file = fopen(filename, "r");
+    if (file == NULL) {
+        perror("error opening file");
+        exit(1);
+    }
+
+    char buffer[1024];
+    while (fgets(buffer, sizeof(buffer), file) != NULL) {
+        printf("%s", buffer);
+    }
+    printf("\n");
+    fclose(file);
 }
 
 //Clears all text on the terminal

@@ -6,6 +6,8 @@
 #include <sys/stat.h>
 #include <string.h>
 #include <errno.h>
+#include <signal.h> 
+#include <time.h> 
 
 #ifndef FUNCTIONS_H
 #define FUNCTIONS_H
@@ -19,7 +21,7 @@ void view_users();
 void create_user();
 void create_chat();
 void send_public_message();
-void print_chat();
+void print_chat(char *filename);
 void clear_terminal();
 
 /*
