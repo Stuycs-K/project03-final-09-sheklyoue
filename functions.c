@@ -1,4 +1,4 @@
-#include "networking.h"
+#include "functions.h"
 
 
 void server_setup() {
@@ -17,12 +17,16 @@ void view_users() {
 
 //Prints the chat on the terminal
 void print_chat() {
-
+    
 }
 
 //Clears all text on the terminal
 void clear_terminal() {
-
+    char *args[] = {"clear", NULL};
+    if (execvp("clear", args) == -1) {
+        perror("execvp clear failed");
+        exit(1);
+    }
 }
 
 void send_public_message() {

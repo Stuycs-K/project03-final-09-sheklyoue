@@ -7,18 +7,18 @@
 #include <string.h>
 #include <errno.h>
 
-#ifndef NETWORKING_H
-#define NETWORKING_H
+#ifndef FUNCTIONS_H
+#define FUNCTIONS_H
 
 struct user {
   char username[100];
-}
+};
 
-int server_setup();
+void server_setup();
 void view_users();
-int create_user();
+void create_user();
 void create_chat();
-int send_public_message();
+void send_public_message();
 void print_chat();
 void clear_terminal();
 
