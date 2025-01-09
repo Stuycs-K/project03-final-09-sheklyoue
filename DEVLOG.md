@@ -24,7 +24,9 @@ Expanded description including how much time was spent on task.
 ### 2024-01-03 - Brief description
 Expanded description including how much time was spent on task.
 
-### 2025-01-08
+### 2025-01-08 - Organization and clear_terminal()
 - Wrote the makefile to run a temp main.
 - organized function headers and wrote descriptions
 - wrote and tested clear_terminal
+
+### 2025-01-09 - server.c
