@@ -10,8 +10,11 @@ Expanded description including how much time was spent on task.
 ### 2024-01-03 - Brief description
 Expanded description including how much time was spent on task.
 
-### 2024-01-07 - Outline project files and functions
-Looked into *ncurses* library 
+### 2025-01-07 - Outline project files and functions
+- Looked into *ncurses* library 
+
+### 2025-01-08 - Discuss specifics on how project will be implemented 
+- wrote function to read chat
 
 ## Eric
 
