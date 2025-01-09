@@ -20,3 +20,8 @@ Expanded description including how much time was spent on task.
 
 ### 2024-01-03 - Brief description
 Expanded description including how much time was spent on task.
+
+### 2025-01-08
+- Wrote the makefile to run a temp main.
+- organized function headers and wrote descriptions
+- wrote and tested clear_terminal
