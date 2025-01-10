@@ -16,6 +16,10 @@ Expanded description including how much time was spent on task.
 ### 2025-01-08 - Discuss specifics on how project will be implemented 
 - wrote function to read chat
 
+### 2025-01-09 - Work on server/client communication
+- user input sent back and forth between client and server
+- tried to expand to multiple clients
+
 ## Eric
 
 ### 2024-01-02 - Brief description
