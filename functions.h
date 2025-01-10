@@ -20,7 +20,7 @@ struct user {
 };
 
 int server_setup();
-int server_handshake(int *to_client, int from_client);
+int server_handshake(int *to_client);
 int client_handshake(int *to_server);
 
 void view_users();
