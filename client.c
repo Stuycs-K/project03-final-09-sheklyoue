@@ -39,24 +39,28 @@ int main()  {
   while (1) {
         printf("Write your message\n");
         printf("> ");
-        char buffer[BUFFER_SIZE];
-        memset(buffer, 0, BUFFER_SIZE);
-        fgets(buffer, sizeof(buffer), stdin);
+        char message[BUFFER_SIZE];
+        fgets(message, sizeof(message), stdin);
 
         // Remove newline character
-        buffer[strlen(buffer) - 1] = '\0';
+        message[strlen(message) - 1] = '\0';
 
-        int bytes = read(client_socket, buffer, BUFFER_SIZE);
-        if (bytes == 0) {
+        printf("Sending message '%s'\n", message);
+        int bytesWritten = write(client_socket, message, strlen(message) + 1);
+        if (bytesWritten < 0) {
+          perror("client write error");
+          exit(1);
+        }
+
+        char buffer[BUFFER_SIZE];
+        int bytesRead = recv(client_socket, buffer, BUFFER_SIZE, MSG_DONTWAIT);
+        if (bytesRead == 0) {
             printf("Server disconnected.\n");
             break;
-        } else if (bytes < 0) {
-            perror("Read error");
-            break;
+        } 
+        else if (bytesRead > 0) {
+          printf("received message: '%s'\n", buffer);
         }
-            
-        printf("Sending message '%s'\n", buffer);
-        write(client_socket, buffer, strlen(buffer) + 1);
   }
 
   close(client_socket);
