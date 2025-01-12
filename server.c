@@ -57,14 +57,19 @@ int main() {
                     perror("server read error");
                     exit(1);
                 }
-                printf("received from client '%s' (read %d bytes)\n", buffer, bytesRead);
-
-                // do something (send message to other clients)
-
-                // done reading, remove socket from list of available file descriptors to read from
                 if (bytesRead == 0) {
+                    // done reading, remove socket from list of available file descriptors to read from
                     FD_CLR(i, &read_fds); 
+                    printf("a client disconnected\n");
                 }
+                else {
+                    printf("received from client '%s' (read %d bytes)\n", buffer, bytesRead);
+
+                    // do something (send message to other clients)
+
+                }
+
+
             }
         }
     }
