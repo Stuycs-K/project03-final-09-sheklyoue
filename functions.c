@@ -45,9 +45,14 @@ int server_connect(int listen_socket) {
     return client_socket;
 }
 
-//Create the user with an username for tracking
-void create_user() {
-
+//Creates the chat and allows for the chatting 
+int create_chat() {
+    int fd = open(CHAT, O_WRONLY | O_APPEND | O_CREAT | O_TRUNC, 0644);
+    if (fd == -1) {
+        perror("open chat file error");
+        exit(1);
+    }
+    return fd;
 }
 
 
@@ -58,14 +63,14 @@ void view_users() {
 
 
 //Prints the chat on the terminal
-void print_chat(char *filename) {
-    FILE *file = fopen(filename, "r");
+void print_chat() {
+    FILE *file = fopen(CHAT, "r");
     if (file == NULL) {
         perror("error opening file");
         exit(1);
     }
 
-    char buffer[1024];
+    char buffer[BUFFER_SIZE];
     while (fgets(buffer, sizeof(buffer), file) != NULL) {
         printf("%s", buffer);
     }
@@ -89,7 +94,4 @@ void send_public_message() {
 }
 
 
-//Creates the chat and allows for the chatting 
-void create_chat() {
 
-}

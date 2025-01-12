@@ -1,6 +1,3 @@
 lawrence: hello
-
-eric: :O
-
-
----end---
+lawrence: bye
+eric: poo

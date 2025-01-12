@@ -15,6 +15,10 @@ int main() {
     FD_ZERO(&read_fds);
     FD_SET(server_socket, &read_fds);
     max_descriptor = server_socket; 
+
+
+    // create chat file
+    int chat = create_chat(); 
     
     while (1) {
         // create a copy since select modifies the set
@@ -47,11 +51,10 @@ int main() {
                         client_fds[i] = client_socket;
                         //char temp_name[BUFFER_SIZE] = "TEMP";
                         strcpy(client_names[i], name);
-                        printf("Adding to list of sockets at index %d\n", i);
+                        // printf("Adding to list of sockets at index %d\n", i);
                         break;
                     }
                 }
-                printf("out of loop! \n");
                 // add socket to fdset
                 FD_SET(client_socket, &read_fds);
                 // update max_descriptor 
@@ -84,7 +87,25 @@ int main() {
                 else {
                     printf("received from client '%s' (read %d bytes)\n", buffer, bytesRead);
 
-                    // do something (send message to other clients)
+                    // send message to chat
+                    char message[BUFFER_SIZE];
+                    for (int c = 0; c < MAX_CLIENTS; c++) {
+                        if (client_fds[c] == i) {
+                            // append name
+                            strcpy(message, client_names[c]);
+                            break;
+                        }
+                    }
+                    strcat(message, ": ");
+                    strcat(message, buffer);
+                    strcat(message, "\n");
+                    printf("message '%s'\n", message);
+
+                    int bytesWritten = write(chat, message, strlen(message));
+                    if (bytesWritten < 0) {
+                        perror("server write error");
+                    }
+
 
                 }
 

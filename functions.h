@@ -16,6 +16,7 @@
 #define BUFFER_SIZE 1000
 #define MAX_CLIENTS 25
 #define WKP "lawric"
+#define CHAT "chat.txt"
 
 struct user {
   char username[100];
@@ -24,10 +25,9 @@ struct user {
 int server_setup();
 int server_connect(int listen_socket);
 void view_users();
-void create_user();
-void create_chat();
+int create_chat();
 void send_public_message();
-void print_chat(char *filename);
+void print_chat();
 void clear_terminal();
 
 /*
