@@ -37,7 +37,7 @@ int main()  {
         // Remove newline character
         buffer[strlen(buffer) - 1] = '\0';
 
-        int bytes = read(sock, buffer, BUFFER_SIZE);
+        int bytes = read(client_socket, buffer, BUFFER_SIZE);
         if (bytes == 0) {
             printf("Server disconnected.\n");
             break;
@@ -47,7 +47,7 @@ int main()  {
         }
             
         printf("Sending message '%s'\n", buffer);
-        send(client_socket, buffer, strlen(buffer) + 1, 0);
+        write(client_socket, buffer, strlen(buffer) + 1);
   }
 
   close(client_socket);

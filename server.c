@@ -1,9 +1,11 @@
 #include "functions.h" 
 
 int main() {
-    int clients[MAX_CLIENTS][2];
+    int client_fds[MAX_CLIENTS];
+    char client_names[MAX_CLIENTS][BUFFER_SIZE];
     for (int c = 0; c < MAX_CLIENTS; c++) {
-        clients[c] = 0;
+        client_fds[c] = 0;
+        strcpy(client_names[c], "");
     }
     int max_descriptor = 0;
     int server_socket = server_setup(); 
@@ -32,14 +34,21 @@ int main() {
                 // accept new connection 
                 int client_socket = server_connect(server_socket);  
                 printf("new client connected\n");
+
+                //char name_prompt[] = "Username: "; 
+
+                //int name_bytes = write(client_socket, )
                 // add new client to list of fd
                 for (int i = 0; i < MAX_CLIENTS; i++) {
-                    if (clients[i] == 0) {
-                        clients[i] = {client_socket, i+1};
-                        //printf("Adding to list of sockets at index %d\n", i);
+                    if (client_fds[i] == 0) {
+                        client_fds[i] = client_socket;
+                        char temp_name[BUFFER_SIZE] = "TEMP";
+                        strcpy(client_names[i], temp_name);
+                        printf("Adding to list of sockets at index %d\n", i);
                         break;
                     }
                 }
+                printf("out of loop! \n");
                 // add socket to fdset
                 FD_SET(client_socket, &read_fds);
                 // update max_descriptor 
@@ -59,8 +68,15 @@ int main() {
                 }
                 if (bytesRead == 0) {
                     // done reading, remove socket from list of available file descriptors to read from
+                    for(int c = 0; c < MAX_CLIENTS; c++) {
+                        if (client_fds[c] == i) {
+                            client_fds[c] = 0;
+                            printf("%s disconnected!\n", client_names[c]);
+                            strcpy(client_names[c], ""); 
+                            break;
+                        }
+                    }
                     FD_CLR(i, &read_fds); 
-                    printf("a client disconnected\n");
                 }
                 else {
                     printf("received from client '%s' (read %d bytes)\n", buffer, bytesRead);
@@ -68,7 +84,6 @@ int main() {
                     // do something (send message to other clients)
 
                 }
-
 
             }
         }
