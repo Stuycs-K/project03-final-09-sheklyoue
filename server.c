@@ -35,15 +35,16 @@ int main() {
                 int client_socket = server_connect(server_socket);  
                 printf("new client connected\n");
 
-                //char name_prompt[] = "Username: "; 
+                char name[BUFFER_SIZE];
+                int name_bytes = read(i, name, BUFFER_SIZE);
+                printf("name_bytes = %d\n", name_bytes);
 
-                //int name_bytes = write(client_socket, )
                 // add new client to list of fd
                 for (int i = 0; i < MAX_CLIENTS; i++) {
                     if (client_fds[i] == 0) {
                         client_fds[i] = client_socket;
-                        char temp_name[BUFFER_SIZE] = "TEMP";
-                        strcpy(client_names[i], temp_name);
+                        //char temp_name[BUFFER_SIZE] = "TEMP";
+                        strcpy(client_names[i], name);
                         printf("Adding to list of sockets at index %d\n", i);
                         break;
                     }

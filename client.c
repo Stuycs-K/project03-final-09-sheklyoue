@@ -27,8 +27,17 @@ int main()  {
       return 1;
   }
 
-  printf("Connected to server. Type messages below:\n");
+  printf("Connected to server.\n");
+  char name[BUFFER_SIZE];
+  printf("Please write your username: ");
+  fgets(name, BUFFER_SIZE, stdin);
+  int bytes = write(client_socket, name, BUFFER_SIZE);
+  if (bytes < 0) {
+    perror("Name error\n");
+  }
+
   while (1) {
+        printf("Write your message\n");
         printf("> ");
         char buffer[BUFFER_SIZE];
         memset(buffer, 0, BUFFER_SIZE);
