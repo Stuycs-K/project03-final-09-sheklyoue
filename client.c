@@ -1,51 +1,47 @@
 #include "functions.h"
 
-int to_server;
-int from_server;
 
+int main()  {
+  struct addrinfo hints, *res;
+  char *host = "127.0.0.1";
+  char *port = "9998";
 
-void sighandler(int signo) {
-  close(to_server);
-  close(from_server);
-  if (signo == SIGINT) {
-    printf("\nclient disconnected\n");
+  memset(&hints, 0, sizeof(hints));
+  hints.ai_family = AF_INET;
+  hints.ai_socktype = SOCK_STREAM;
+
+  if (getaddrinfo(host, port, &hints, &res) != 0) {
+      perror("getaddrinfo");
+      return 1;
   }
-  if (signo == SIGPIPE) {
-    printf("Message not sent because server was closed.\n");
+
+  int client_socket = socket(res->ai_family, res->ai_socktype, res->ai_protocol);
+  if (client_socket == -1) {
+      perror("socket");
+      return 1;
   }
-  exit(0);
-}
 
+  if (connect(client_socket, res->ai_addr, res->ai_addrlen) == -1) {
+      perror("connect");
+      close(client_socket);
+      return 1;
+  }
 
-int main() {
-  signal(SIGINT, sighandler);
-  signal(SIGPIPE, sighandler);
-
-  from_server = client_handshake(&to_server);
-
+  printf("Connected to server. Type messages below:\n");
   while (1) {
-    // prompt user for message to send
-    char message[BUFFER_SIZE];
-    printf("input message: ");
-    fgets(message, BUFFER_SIZE - 1, stdin);
-    // get rid of trailing '\n'
-    message[strlen(message) - 1] = '\0';
-    // send message to server
-    int bytesWritten = write(to_server, message, strlen(message) + 1);
+      printf("> ");
+      char buffer[BUFFER_SIZE];
+      memset(buffer, 0, BUFFER_SIZE);
+      fgets(buffer, sizeof(buffer), stdin);
 
-    // read any messages that were sent to the server
-    char buffer[BUFFER_SIZE];
-    int bytesRead = read(from_server, buffer, BUFFER_SIZE);
-    if (bytesRead == 0) {
-      printf("Server closed.\n");
-      break;
-    }
-    if (bytesRead < 0) {
-      perror("client couldn't receive message from server");
-      exit(1);
-    }
-    printf("client received: %s\n", buffer);
+      // Remove newline character
+      buffer[strlen(buffer) - 1] = '\0';
+
+      printf("sending message '%s'\n", buffer);
+      send(client_socket, buffer, strlen(buffer) + 1, 0);
   }
-  close(to_server);
-  close(from_server);
+
+  close(client_socket);
+  freeaddrinfo(res);
+  return 0;
 }
