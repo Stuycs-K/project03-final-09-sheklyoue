@@ -29,16 +29,25 @@ int main()  {
 
   printf("Connected to server. Type messages below:\n");
   while (1) {
-      printf("> ");
-      char buffer[BUFFER_SIZE];
-      memset(buffer, 0, BUFFER_SIZE);
-      fgets(buffer, sizeof(buffer), stdin);
+        printf("> ");
+        char buffer[BUFFER_SIZE];
+        memset(buffer, 0, BUFFER_SIZE);
+        fgets(buffer, sizeof(buffer), stdin);
 
-      // Remove newline character
-      buffer[strlen(buffer) - 1] = '\0';
+        // Remove newline character
+        buffer[strlen(buffer) - 1] = '\0';
 
-      printf("sending message '%s'\n", buffer);
-      send(client_socket, buffer, strlen(buffer) + 1, 0);
+        int bytes = read(sock, buffer, BUFFER_SIZE);
+        if (bytes == 0) {
+            printf("Server disconnected.\n");
+            break;
+        } else if (bytes < 0) {
+            perror("Read error");
+            break;
+        }
+            
+        printf("Sending message '%s'\n", buffer);
+        send(client_socket, buffer, strlen(buffer) + 1, 0);
   }
 
   close(client_socket);

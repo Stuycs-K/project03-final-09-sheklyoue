@@ -1,6 +1,10 @@
 #include "functions.h" 
 
 int main() {
+    int clients[MAX_CLIENTS][2];
+    for (int c = 0; c < MAX_CLIENTS; c++) {
+        clients[c] = 0;
+    }
     int max_descriptor = 0;
     int server_socket = server_setup(); 
 
@@ -28,6 +32,14 @@ int main() {
                 // accept new connection 
                 int client_socket = server_connect(server_socket);  
                 printf("new client connected\n");
+                // add new client to list of fd
+                for (int i = 0; i < MAX_CLIENTS; i++) {
+                    if (clients[i] == 0) {
+                        clients[i] = {client_socket, i+1};
+                        //printf("Adding to list of sockets at index %d\n", i);
+                        break;
+                    }
+                }
                 // add socket to fdset
                 FD_SET(client_socket, &read_fds);
                 // update max_descriptor 

@@ -14,6 +14,7 @@
 #define FUNCTIONS_H
 
 #define BUFFER_SIZE 1000
+#define MAX_CLIENTS 25
 #define WKP "lawric"
 
 struct user {

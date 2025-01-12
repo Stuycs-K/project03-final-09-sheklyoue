@@ -29,7 +29,7 @@ int server_setup() {
       exit(1);
   }
   // listen socket  
-  listen(listen_socket, 3);//3 clients can wait to be processed
+  listen(listen_socket, MAX_CLIENTS);//3 clients can wait to be processed
   printf("Listening on port %s\n",PORT);
 
   return listen_socket;
