@@ -16,4 +16,5 @@ server: server.o functions.o
 	@gcc -o server server.o functions.o -Wall
 
 clean:
-	rm -f *.o client server
+	rm -f *.o runme client server
+	rm -f chat.txt

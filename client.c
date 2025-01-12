@@ -38,6 +38,26 @@ int main()  {
   write(client_socket, name, sizeof(name));
 
   while (1) {
+    clear_chat();
+            print_chat();
+            printf("\n");
+        char buffer[BUFFER_SIZE];
+        int bytesRead = recv(client_socket, buffer, BUFFER_SIZE, MSG_DONTWAIT);
+        if (bytesRead == 0) {
+            printf("Server disconnected.\n");
+            break;
+        } 
+        else if (bytesRead > 0) {
+          //printf("received message: '%s'\n", buffer);
+        }
+
+        // printf("buffer : %s\n", buffer);
+        // if (strcmp(update_signal, buffer) == 0) {
+        //     clear_chat();
+        //     print_chat();
+        //     printf("\n");
+        // }
+
         printf("Write your message\n");
         printf("> ");
         char message[BUFFER_SIZE];
@@ -46,22 +66,13 @@ int main()  {
         // Remove newline character
         message[strlen(message) - 1] = '\0';
 
-        printf("Sending message '%s'\n", message);
+        //printf("Sending message '%s'\n", message);
         int bytesWritten = write(client_socket, message, strlen(message) + 1);
         if (bytesWritten < 0) {
           perror("client write error");
           exit(1);
         }
 
-        char buffer[BUFFER_SIZE];
-        int bytesRead = recv(client_socket, buffer, BUFFER_SIZE, MSG_DONTWAIT);
-        if (bytesRead == 0) {
-            printf("Server disconnected.\n");
-            break;
-        } 
-        else if (bytesRead > 0) {
-          printf("received message: '%s'\n", buffer);
-        }
   }
 
   close(client_socket);

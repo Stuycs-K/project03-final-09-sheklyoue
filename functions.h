@@ -17,6 +17,7 @@
 #define MAX_CLIENTS 25
 #define WKP "lawric"
 #define CHAT "chat.txt"
+#define update_signal "update_SYN"
 
 struct user {
   char username[100];
@@ -28,7 +29,7 @@ void view_users();
 int create_chat();
 void send_public_message();
 void print_chat();
-void clear_terminal();
+void clear_chat();
 
 /*
 functions to add later 
