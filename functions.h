@@ -4,6 +4,7 @@
 #include <fcntl.h>
 #include <sys/types.h>
 #include <sys/stat.h>
+#include <sys/netdb.h> 
 #include <string.h>
 #include <errno.h>
 #include <signal.h> 
@@ -20,8 +21,6 @@ struct user {
 };
 
 int server_setup();
-int server_handshake(int *to_client, int from_client);
-int client_handshake(int *to_server);
 
 void view_users();
 void create_user();

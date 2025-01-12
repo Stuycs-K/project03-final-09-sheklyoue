@@ -7,16 +7,16 @@ testing_main.o: testing_main.c functions.h
 	@gcc -c testing_main.c
 
 client.o: client.c functions.h
-	gcc -c client.c
+	@gcc -c client.c
 
 server.o: server.c functions.h
-	gcc -c server.c
+	@gcc -c server.c
 
 client: client.o functions.o
-	gcc -o client client.o functions.o
+	@gcc -o client client.o functions.o
 
 server: server.o functions.o
-	gcc -o server server.o functions.o
+	@gcc -o server server.o functions.o
 
 compile: functions.o testing_main.o
 	@gcc -o runme functions.o testing_main.o -Wall
