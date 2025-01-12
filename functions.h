@@ -4,7 +4,7 @@
 #include <fcntl.h>
 #include <sys/types.h>
 #include <sys/stat.h>
-#include <sys/netdb.h> 
+#include <netdb.h>
 #include <string.h>
 #include <errno.h>
 #include <signal.h> 
@@ -21,6 +21,7 @@ struct user {
 };
 
 int server_setup();
+int server_connect(int listen_socket);
 void view_users();
 void create_user();
 void create_chat();

@@ -36,6 +36,14 @@ int server_setup() {
 }
 
 
+int server_connect(int listen_socket) {
+    socklen_t sock_size;
+    struct sockaddr_storage client_address;
+    sock_size = sizeof(client_address);
+    
+    int client_socket = accept(listen_socket,(struct sockaddr *)&client_address, &sock_size);
+    return client_socket;
+}
 
 //Create the user with an username for tracking
 void create_user() {
