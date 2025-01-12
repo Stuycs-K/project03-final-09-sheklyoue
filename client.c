@@ -28,13 +28,14 @@ int main()  {
   }
 
   printf("Connected to server.\n");
-  char name[BUFFER_SIZE];
-  printf("Please write your username: ");
-  fgets(name, BUFFER_SIZE, stdin);
-  int bytes = write(client_socket, name, BUFFER_SIZE);
-  if (bytes < 0) {
-    perror("Name error\n");
-  }
+  char welcome_message[256];
+  char name[256];
+  read(client_socket, welcome_message, sizeof(welcome_message));
+  printf("%s\n", welcome_message);
+  printf("Please input your name: ");
+  fgets(name, sizeof(name), stdin);
+  name[strlen(name) - 1] = '\0';
+  write(client_socket, name, sizeof(name));
 
   while (1) {
         printf("Write your message\n");

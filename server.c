@@ -35,9 +35,11 @@ int main() {
                 int client_socket = server_connect(server_socket);  
                 printf("new client connected\n");
 
+                char welcome_message[256] = "Welcome to the chat!";
+                write(client_socket, welcome_message, sizeof(welcome_message));
+
                 char name[BUFFER_SIZE];
-                int name_bytes = read(i, name, BUFFER_SIZE);
-                printf("name_bytes = %d\n", name_bytes);
+                read(client_socket, name, BUFFER_SIZE);
 
                 // add new client to list of fd
                 for (int i = 0; i < MAX_CLIENTS; i++) {
