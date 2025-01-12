@@ -1,3 +1,0 @@
-lawrence: hello
-lawrence: bye
-eric: poo

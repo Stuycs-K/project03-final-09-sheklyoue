@@ -80,12 +80,8 @@ void print_chat() {
 
 
 //Clears all text on the terminal
-void clear_terminal() {
-    char *args[] = {"clear", NULL};
-    if (execvp("clear", args) == -1) {
-        perror("execvp clear failed");
-        exit(1);
-    }
+void clear_chat() {
+    system("clear");
 }
 
 

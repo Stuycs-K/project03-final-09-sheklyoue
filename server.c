@@ -37,7 +37,7 @@ int main() {
             if (i == server_socket) {
                 // accept new connection 
                 int client_socket = server_connect(server_socket);  
-                printf("new client connected\n");
+                //printf("new client connected\n");
 
                 char welcome_message[256] = "Welcome to the chat!";
                 write(client_socket, welcome_message, sizeof(welcome_message));
@@ -51,6 +51,7 @@ int main() {
                         client_fds[i] = client_socket;
                         //char temp_name[BUFFER_SIZE] = "TEMP";
                         strcpy(client_names[i], name);
+                        printf("Client [%s] connected\n", client_names[i]);
                         // printf("Adding to list of sockets at index %d\n", i);
                         break;
                     }
@@ -100,13 +101,15 @@ int main() {
                     strcat(message, buffer);
                     strcat(message, "\n");
                     printf("message '%s'\n", message);
-
+                    
                     int bytesWritten = write(chat, message, strlen(message));
                     if (bytesWritten < 0) {
                         perror("server write error");
                     }
 
-
+                    for (int c = 0; c < MAX_CLIENTS; c++) {
+                        write(client_fds[c], update_signal, sizeof(update_signal));
+                    }
                 }
 
             }

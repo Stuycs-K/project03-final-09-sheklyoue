@@ -28,3 +28,4 @@ compile_server: client server
 
 clean:
 	rm -f *.o runme client server
+	rm -f chat.txt
