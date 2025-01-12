@@ -73,6 +73,7 @@ int main() {
                     perror("server read error");
                     exit(1);
                 }
+
                 if (bytesRead == 0) {
                     // done reading, remove socket from list of available file descriptors to read from
                     for(int c = 0; c < MAX_CLIENTS; c++) {
@@ -87,27 +88,23 @@ int main() {
                 }
                 else {
                     //printf("received from client '%s' (read %d bytes)\n", buffer, bytesRead);
-                    printf("before writing to chat.txt\n");
+                    //printf("before writing to chat.txt\n");
                     // send message to chat
                     char message[BUFFER_SIZE];
                     for (int c = 0; c < MAX_CLIENTS; c++) {
                         if (client_fds[c] == i) {
                             // append name
-                            strcpy(message, client_names[c]);
+                            sprintf(message, "[%s] %s\n", client_names[c], buffer);
                             break;
                         }
                     }
-                    strcat(message, ": ");
-                    strcat(message, buffer);
-                    strcat(message, "\n");
-                    printf("message '%s'\n", message);
 
                     int bytesWritten = write(chat, message, strlen(message));
                     if (bytesWritten < 0) {
                         perror("server write error");
                     }
 
-                    printf("sending signal");
+                    //printf("sending signal");
                     for (int c = 0; c < MAX_CLIENTS; c++) {
                         if (client_fds[c] > 0) {
                             write(client_fds[c], update_signal, sizeof(update_signal));

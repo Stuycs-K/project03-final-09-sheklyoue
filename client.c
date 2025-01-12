@@ -38,9 +38,9 @@ int main()  {
   write(client_socket, name, sizeof(name));
 
   while (1) {
-    clear_chat();
-            print_chat();
-            printf("\n");
+        clear_chat();
+        print_chat();
+        
         char buffer[BUFFER_SIZE];
         int bytesRead = recv(client_socket, buffer, BUFFER_SIZE, MSG_DONTWAIT);
         if (bytesRead == 0) {
@@ -50,13 +50,6 @@ int main()  {
         else if (bytesRead > 0) {
           //printf("received message: '%s'\n", buffer);
         }
-
-        // printf("buffer : %s\n", buffer);
-        // if (strcmp(update_signal, buffer) == 0) {
-        //     clear_chat();
-        //     print_chat();
-        //     printf("\n");
-        // }
 
         printf("Write your message\n");
         printf("> ");
