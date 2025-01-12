@@ -86,8 +86,8 @@ int main() {
                     FD_CLR(i, &read_fds); 
                 }
                 else {
-                    printf("received from client '%s' (read %d bytes)\n", buffer, bytesRead);
-
+                    //printf("received from client '%s' (read %d bytes)\n", buffer, bytesRead);
+                    printf("before writing to chat.txt\n");
                     // send message to chat
                     char message[BUFFER_SIZE];
                     for (int c = 0; c < MAX_CLIENTS; c++) {
@@ -101,14 +101,17 @@ int main() {
                     strcat(message, buffer);
                     strcat(message, "\n");
                     printf("message '%s'\n", message);
-                    
+
                     int bytesWritten = write(chat, message, strlen(message));
                     if (bytesWritten < 0) {
                         perror("server write error");
                     }
 
+                    printf("sending signal");
                     for (int c = 0; c < MAX_CLIENTS; c++) {
-                        write(client_fds[c], update_signal, sizeof(update_signal));
+                        if (client_fds[c] > 0) {
+                            write(client_fds[c], update_signal, sizeof(update_signal));
+                        }
                     }
                 }
 
