@@ -21,7 +21,6 @@ struct user {
 };
 
 int server_setup();
-
 void view_users();
 void create_user();
 void create_chat();

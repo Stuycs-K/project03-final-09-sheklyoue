@@ -12,8 +12,16 @@ int server_setup() {
   getaddrinfo(NULL, PORT, hints, &results);  //NULL is localhost or 127.0.0.1
 
   //create listen socket
-  int listen_socket(results->ai_family, results->ai_socktype, results->ai_protocol);
- 
+  int listen_socket = socket(results->ai_family, results->ai_socktype, results->ai_protocol);
+
+  //this code allows the port to be freed after program exit.  (otherwise wait a few minutes)
+  int yes = 1;
+  if (setsockopt(listen_socket, SOL_SOCKET, SO_REUSEADDR, &yes, sizeof(yes)) == -1) {
+      printf("sockopt  error\n");
+      printf("%s\n",strerror(errno));
+      exit(-1);
+  }
+
   // bind listening socket to address 
   int err = bind(listen_socket, results->ai_addr, results->ai_addrlen);
   if(err == -1){
@@ -23,9 +31,9 @@ int server_setup() {
   // listen socket  
   listen(listen_socket, 3);//3 clients can wait to be processed
   printf("Listening on port %s\n",PORT);
-  return listen_socket; 
-}
 
+  return listen_socket;
+}
 
 
 
