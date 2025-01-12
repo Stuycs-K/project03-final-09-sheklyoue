@@ -20,6 +20,12 @@ Expanded description including how much time was spent on task.
 - user input sent back and forth between client and server
 - tried to expand to multiple clients
 
+### 2025-01-12 - Basic chat function working (worked together with eric)
+- multiple clients can connect to the server 
+- the chat is refreshed after every message sent 
+- however, refreshing only happens after the client side sends a message
+- need to look into ncurses 
+
 ## Eric
 
 ### 2024-01-02 - Brief description
@@ -34,3 +40,13 @@ Expanded description including how much time was spent on task.
 - wrote and tested clear_terminal
 
 ### 2025-01-09 - server.c
+- attempted to get multiple clients to connect
+
+### 2025-01-12 - Basic chat function working (worked together with lawrence)
+- multiple clients can connect to the server 
+- implemented sockets 
+- server keeps track of all clients
+- clients are able to input a name
+- the chat is refreshed after every message sent 
+- however, refreshing only happens after the client side sends a message
+- need to look into ncurses 
