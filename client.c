@@ -14,6 +14,7 @@ static void sighandler(int signo) {
 int main(int argc, char *argv[])  {
   signal(SIGINT, sighandler);
   struct addrinfo hints, *res;
+  int bytesRead, bytesWritten;
 
   if (argc != 2) {
     fprintf(stderr,"usage: ./client hostname\n");
@@ -44,19 +45,29 @@ int main(int argc, char *argv[])  {
   printf("Connected to server.\n");
   char welcome_message[256];
   char name[256];
-  read(client_socket, welcome_message, sizeof(welcome_message));
+  bytesRead = read(client_socket, welcome_message, sizeof(welcome_message));
+  if (bytesRead < 0) {
+    perror("failed to read welcome message");
+    exit(1);
+  }
+
   printf("%s\n", welcome_message);
   printf("Please input your name: ");
   fgets(name, sizeof(name), stdin);
   name[strlen(name) - 1] = '\0';
-  write(client_socket, name, sizeof(name));
+  bytesWritten = write(client_socket, name, sizeof(name));
+  if (bytesWritten < 0) {
+    perror("failed to send name to server");
+    exit(1);
+  }
+
 
   while (1) {
         clear_chat();
         print_chat();
         
         char buffer[BUFFER_SIZE];
-        int bytesRead = recv(client_socket, buffer, BUFFER_SIZE, MSG_DONTWAIT);
+        bytesRead = recv(client_socket, buffer, BUFFER_SIZE, MSG_DONTWAIT);
         if (bytesRead == 0) {
             printf("Server closed.\n");
             break;
@@ -74,7 +85,7 @@ int main(int argc, char *argv[])  {
         message[strlen(message) - 1] = '\0';
 
         //printf("Sending message '%s'\n", message);
-        int bytesWritten = write(client_socket, message, strlen(message) + 1);
+        bytesWritten = write(client_socket, message, strlen(message) + 1);
         if (bytesWritten < 0) {
           perror("client write error");
           exit(1);

@@ -71,7 +71,6 @@ int main() {
                 int bytesRead = read(i, buffer, sizeof(buffer));
                 if (bytesRead < 0) {
                     // perror("server read error");
-                    printf("a client disconnected?\n");
                 }
                 else if (bytesRead == 0) {
                     // done reading, remove socket from list of available file descriptors to read from
