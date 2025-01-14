@@ -18,6 +18,7 @@
 #define WKP "lawric"
 #define CHAT "chat.txt"
 #define update_signal "update_SYN"
+#define PORT "9998"
 
 struct user {
   char username[100];
@@ -25,6 +26,7 @@ struct user {
 
 int server_setup();
 int server_connect(int listen_socket);
+// void *get_in_addr(struct sockaddr *sa);
 void view_users();
 int create_chat();
 void send_public_message();
