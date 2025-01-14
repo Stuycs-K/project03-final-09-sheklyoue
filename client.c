@@ -1,16 +1,19 @@
 #include "functions.h"
 
 
-int main()  {
+int main(int argc, char *argv[])  {
   struct addrinfo hints, *res;
-  char *host = "127.0.0.1";
-  char *port = "9998";
 
+  if (argc != 2) {
+    fprintf(stderr,"usage: ./client hostname\n");
+    exit(1);
+  }
+  char *host = argv[1];
   memset(&hints, 0, sizeof(hints));
   hints.ai_family = AF_INET;
   hints.ai_socktype = SOCK_STREAM;
 
-  if (getaddrinfo(host, port, &hints, &res) != 0) {
+  if (getaddrinfo(host, PORT, &hints, &res) != 0) {
       perror("getaddrinfo");
       return 1;
   }

@@ -4,7 +4,6 @@
 int server_setup() {
   struct addrinfo * hints, * results;//results is allocated in getaddrinfo
   hints = calloc(1,sizeof(struct addrinfo));
-  char* PORT = "9998";
 
   hints->ai_family = AF_INET; // domain of socket (tpye of address) 
   hints->ai_socktype = SOCK_STREAM; //TCP socket
@@ -44,6 +43,15 @@ int server_connect(int listen_socket) {
     int client_socket = accept(listen_socket,(struct sockaddr *)&client_address, &sock_size);
     return client_socket;
 }
+
+// get sockaddr, IPv4 or IPv6:
+// void *get_in_addr(struct sockaddr *sa) {
+//     if (sa->sa_family == AF_INET) {
+//         return &(((struct sockaddr_in*)sa)->sin_addr);
+//     }
+
+//     return &(((struct sockaddr_in6*)sa)->sin6_addr);
+// }
 
 //Creates the chat and allows for the chatting 
 int create_chat() {
