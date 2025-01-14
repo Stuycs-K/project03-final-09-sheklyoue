@@ -70,11 +70,10 @@ int main() {
 
                 int bytesRead = read(i, buffer, sizeof(buffer));
                 if (bytesRead < 0) {
-                    perror("server read error");
-                    exit(1);
+                    // perror("server read error");
+                    printf("a client disconnected?\n");
                 }
-
-                if (bytesRead == 0) {
+                else if (bytesRead == 0) {
                     // done reading, remove socket from list of available file descriptors to read from
                     for(int c = 0; c < MAX_CLIENTS; c++) {
                         if (client_fds[c] == i) {
