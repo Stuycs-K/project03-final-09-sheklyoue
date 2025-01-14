@@ -1,7 +1,18 @@
 #include "functions.h"
 
+int client_socket;
+struct addrinfo *res;
+
+static void sighandler(int signo) {
+  close(client_socket);
+  freeaddrinfo(res);
+  printf("\nDisconnected from server.\n");
+  exit(0);
+}
+
 
 int main(int argc, char *argv[])  {
+  signal(SIGINT, sighandler);
   struct addrinfo hints, *res;
 
   if (argc != 2) {
@@ -18,7 +29,7 @@ int main(int argc, char *argv[])  {
       return 1;
   }
 
-  int client_socket = socket(res->ai_family, res->ai_socktype, res->ai_protocol);
+  client_socket = socket(res->ai_family, res->ai_socktype, res->ai_protocol);
   if (client_socket == -1) {
       perror("socket");
       return 1;
@@ -47,7 +58,7 @@ int main(int argc, char *argv[])  {
         char buffer[BUFFER_SIZE];
         int bytesRead = recv(client_socket, buffer, BUFFER_SIZE, MSG_DONTWAIT);
         if (bytesRead == 0) {
-            printf("Server disconnected.\n");
+            printf("Server closed.\n");
             break;
         } 
         else if (bytesRead > 0) {
