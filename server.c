@@ -36,26 +36,7 @@ int main() {
             }
             if (i == server_socket) {
                 // accept new connection 
-                int client_socket = server_connect(server_socket);  
-                //printf("new client connected\n");
-
-                char welcome_message[256] = "Welcome to the chat!";
-                write(client_socket, welcome_message, sizeof(welcome_message));
-
-                char name[BUFFER_SIZE];
-                read(client_socket, name, BUFFER_SIZE);
-
-                // add new client to list of fd
-                for (int i = 0; i < MAX_CLIENTS; i++) {
-                    if (client_fds[i] == 0) {
-                        client_fds[i] = client_socket;
-                        //char temp_name[BUFFER_SIZE] = "TEMP";
-                        strcpy(client_names[i], name);
-                        printf("Client [%s] connected\n", client_names[i]);
-                        // printf("Adding to list of sockets at index %d\n", i);
-                        break;
-                    }
-                }
+                int client_socket = handle_new_connection(server_socket, client_fds, client_names);
                 // add socket to fdset
                 FD_SET(client_socket, &read_fds);
                 // update max_descriptor 
@@ -85,31 +66,8 @@ int main() {
                     FD_CLR(i, &read_fds); 
                 }
                 else {
-                    //printf("received from client '%s' (read %d bytes)\n", buffer, bytesRead);
-                    //printf("before writing to chat.txt\n");
-                    // send message to chat
-                    char message[BUFFER_SIZE];
-                    for (int c = 0; c < MAX_CLIENTS; c++) {
-                        if (client_fds[c] == i) {
-                            // append name
-                            sprintf(message, "[%s] %s\n", client_names[c], buffer);
-                            break;
-                        }
-                    }
-
-                    int bytesWritten = write(chat, message, strlen(message));
-                    if (bytesWritten < 0) {
-                        perror("server write error");
-                    }
-
-                    //printf("sending signal");
-                    for (int c = 0; c < MAX_CLIENTS; c++) {
-                        if (client_fds[c] > 0) {
-                            write(client_fds[c], update_signal, sizeof(update_signal));
-                        }
-                    }
+                    read_from_clients(int client_fds)
                 }
-
             }
         }
     }

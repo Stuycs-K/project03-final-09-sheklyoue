@@ -26,7 +26,8 @@ struct user {
 
 int server_setup();
 int server_connect(int listen_socket);
-// void *get_in_addr(struct sockaddr *sa);
+int handle_new_connection(int server_socket, int client_fds[], char client_names[][BUFFER_SIZE]);
+void read_from_clients(int fd, int client_fds, char client_names[][BUFFER_SIZE]);
 void view_users();
 int create_chat();
 void send_public_message();

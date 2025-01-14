@@ -44,16 +44,61 @@ int server_connect(int listen_socket) {
     return client_socket;
 }
 
-// get sockaddr, IPv4 or IPv6:
-// void *get_in_addr(struct sockaddr *sa) {
-//     if (sa->sa_family == AF_INET) {
-//         return &(((struct sockaddr_in*)sa)->sin_addr);
-//     }
+int handle_new_connection(int server_socket, int client_fds[], char client_names[][BUFFER_SIZE]) {
+    int client_socket = server_connect(server_socket);  
 
-//     return &(((struct sockaddr_in6*)sa)->sin6_addr);
-// }
+    char welcome_message[256] = "Welcome to the chat!";
+    if (write(client_socket, welcome_message, sizeof(welcome_message)) < 0) {
+        perror("welcome message");
+        exit(1);
+    }
 
-//Creates the chat and allows for the chatting 
+    char name[BUFFER_SIZE];
+    if (read(client_socket, name, BUFFER_SIZE) < 0) {
+        perror("read name");    
+        exit(1);
+    }
+
+    // add new client to list of fd
+    for (int i = 0; i < MAX_CLIENTS; i++) {
+        if (client_fds[i] == 0) {
+            client_fds[i] = client_socket;
+            strcpy(client_names[i], name);
+            printf("Client [%s] connected\n", client_names[i]);
+            break;
+        }
+    }
+    return client_socket;
+}
+
+
+void read_from_clients(int fd, int client_fds, char client_names[][BUFFER_SIZE]) {
+    //printf("received from client '%s' (read %d bytes)\n", buffer, bytesRead);
+    //printf("before writing to chat.txt\n");
+    // send message to chat
+    char message[BUFFER_SIZE];
+    for (int i = 0; i < MAX_CLIENTS; i++) {
+        if (client_fds[i] == fd) {
+            // append name
+            sprintf(message, "[%s] %s\n", client_names[i], buffer);
+            break;
+        }
+    }
+
+    int bytesWritten = write(chat, message, strlen(message));
+    if (bytesWritten < 0) {
+        perror("server write error");
+    }
+
+    //printf("sending signal");
+    for (int i = 0; i < MAX_CLIENTS; i++) {
+        if (client_fds[i] > 0) {
+            write(client_fds[i], update_signal, sizeof(update_signal));
+        }
+    }
+}
+
+
 int create_chat() {
     int fd = open(CHAT, O_WRONLY | O_APPEND | O_CREAT | O_TRUNC, 0644);
     if (fd == -1) {
