@@ -50,3 +50,8 @@ Expanded description including how much time was spent on task.
 - the chat is refreshed after every message sent 
 - however, refreshing only happens after the client side sends a message
 - need to look into ncurses 
+
+### 2025-01-13 - ncurses
+- read up on ncurses 
+- did some testing with multi-windows 
+- planned out what the chat will look like
