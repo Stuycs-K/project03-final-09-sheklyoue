@@ -63,8 +63,8 @@ int main(int argc, char *argv[])  {
 
 
   while (1) {
-        // clear_chat();
-        // print_chat();
+        clear_chat();
+        print_chat();
         
         char buffer[BUFFER_SIZE];
         bytesRead = recv(client_socket, buffer, BUFFER_SIZE, MSG_DONTWAIT);

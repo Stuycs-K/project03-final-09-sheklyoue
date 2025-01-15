@@ -41,33 +41,12 @@ int main() {
                 FD_SET(client_socket, &read_fds);
                 // update max_descriptor 
                 if (client_socket > max_descriptor) {
-                    max_descriptor = client_socket; 
+                    max_descriptor = client_socket;
                 }
             }
             else {
                 // receive message from a client 
-                char buffer[BUFFER_SIZE]; 
-                memset(buffer, 0, BUFFER_SIZE);
-
-                int bytesRead = read(i, buffer, sizeof(buffer));
-                if (bytesRead < 0) {
-                    // perror("server read error");
-                }
-                else if (bytesRead == 0) {
-                    // done reading, remove socket from list of available file descriptors to read from
-                    for(int c = 0; c < MAX_CLIENTS; c++) {
-                        if (client_fds[c] == i) {
-                            client_fds[c] = 0;
-                            printf("%s disconnected!\n", client_names[c]);
-                            strcpy(client_names[c], ""); 
-                            break;
-                        }
-                    }
-                    FD_CLR(i, &read_fds); 
-                }
-                else {
-                    read_from_clients(int client_fds)
-                }
+                read_from_client(chat, i, client_fds, client_names, &read_fds);
             }
         }
     }

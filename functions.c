@@ -72,7 +72,30 @@ int handle_new_connection(int server_socket, int client_fds[], char client_names
 }
 
 
-void read_from_clients(int fd, int client_fds, char client_names[][BUFFER_SIZE]) {
+void read_from_client(int chat, int fd, int client_fds[], char client_names[][BUFFER_SIZE], fd_set *read_fds) {
+    char buffer[BUFFER_SIZE]; 
+    memset(buffer, 0, BUFFER_SIZE);
+    int bytes; 
+
+    bytes = read(fd, buffer, sizeof(buffer));
+    if (bytes < 0) {
+        // client disconnects
+        return;
+    }
+    else if (bytes == 0) {
+        // done reading, remove socket from list of available file descriptors to read from
+        for(int i = 0; i < MAX_CLIENTS; i++) {
+            if (client_fds[i] == fd) {
+                client_fds[i] = 0;
+                printf("%s disconnected!\n", client_names[i]);
+                strcpy(client_names[i], ""); 
+                break;
+            }
+        }
+        FD_CLR(fd, read_fds); 
+        return;
+    }
+
     //printf("received from client '%s' (read %d bytes)\n", buffer, bytesRead);
     //printf("before writing to chat.txt\n");
     // send message to chat
@@ -85,8 +108,8 @@ void read_from_clients(int fd, int client_fds, char client_names[][BUFFER_SIZE])
         }
     }
 
-    int bytesWritten = write(chat, message, strlen(message));
-    if (bytesWritten < 0) {
+    bytes = write(chat, message, strlen(message));
+    if (bytes < 0) {
         perror("server write error");
     }
 
