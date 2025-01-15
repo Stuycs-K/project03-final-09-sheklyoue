@@ -5,7 +5,7 @@ int server_setup() {
   struct addrinfo * hints, * results;//results is allocated in getaddrinfo
   hints = calloc(1,sizeof(struct addrinfo));
 
-  hints->ai_family = AF_INET; // domain of socket (tpye of address) 
+  hints->ai_family = AF_INET; // domain of socket (tpye of address)
   hints->ai_socktype = SOCK_STREAM; //TCP socket
   hints->ai_flags = AI_PASSIVE; //only needed on server
   getaddrinfo(NULL, PORT, hints, &results);  //NULL is localhost or 127.0.0.1
@@ -21,13 +21,13 @@ int server_setup() {
       exit(-1);
   }
 
-  // bind listening socket to address 
+  // bind listening socket to address
   int err = bind(listen_socket, results->ai_addr, results->ai_addrlen);
   if(err == -1){
       printf("Error binding: %s",strerror(errno));
       exit(1);
   }
-  // listen socket  
+  // listen socket
   listen(listen_socket, MAX_CLIENTS);//3 clients can wait to be processed
   printf("Listening on port %s\n",PORT);
 
@@ -39,13 +39,13 @@ int server_connect(int listen_socket) {
     socklen_t sock_size;
     struct sockaddr_storage client_address;
     sock_size = sizeof(client_address);
-    
+
     int client_socket = accept(listen_socket,(struct sockaddr *)&client_address, &sock_size);
     return client_socket;
 }
 
 int handle_new_connection(int server_socket, int client_fds[], char client_names[][BUFFER_SIZE]) {
-    int client_socket = server_connect(server_socket);  
+    int client_socket = server_connect(server_socket);
 
     char welcome_message[256] = "Welcome to the chat!";
     if (write(client_socket, welcome_message, sizeof(welcome_message)) < 0) {
@@ -55,7 +55,7 @@ int handle_new_connection(int server_socket, int client_fds[], char client_names
 
     char name[BUFFER_SIZE];
     if (read(client_socket, name, BUFFER_SIZE) < 0) {
-        perror("read name");    
+        perror("read name");
         exit(1);
     }
 
@@ -73,9 +73,9 @@ int handle_new_connection(int server_socket, int client_fds[], char client_names
 
 
 void read_from_client(char message[], int fd, int client_fds[], char client_names[][BUFFER_SIZE], fd_set *read_fds) {
-    char buffer[BUFFER_SIZE]; 
+    char buffer[BUFFER_SIZE];
     memset(buffer, 0, BUFFER_SIZE);
-    int bytes; 
+    int bytes;
 
     bytes = read(fd, buffer, sizeof(buffer));
     if (bytes < 0) {
@@ -88,11 +88,11 @@ void read_from_client(char message[], int fd, int client_fds[], char client_name
             if (client_fds[i] == fd) {
                 client_fds[i] = 0;
                 printf("%s disconnected!\n", client_names[i]);
-                strcpy(client_names[i], ""); 
+                strcpy(client_names[i], "");
                 break;
             }
         }
-        FD_CLR(fd, read_fds); 
+        FD_CLR(fd, read_fds);
         return;
     }
 
@@ -122,8 +122,11 @@ void write_to_clients(char message[], int client_fds[]) {
 }
 
 
-int create_chat() {
-    int fd = open(CHAT, O_WRONLY | O_APPEND | O_CREAT | O_TRUNC, 0644);
+int create_chat(char username[]) {
+    char filename[256] = "chat_";
+    strcat(filename, username);
+    strcat(filename, ".txt");
+    int fd = open(filename, O_WRONLY | O_APPEND | O_CREAT | O_TRUNC, 0644);
     if (fd == -1) {
         perror("open chat file error");
         exit(1);
@@ -139,8 +142,11 @@ void view_users() {
 
 
 //Prints the chat on the terminal
-void print_chat() {
-    FILE *file = fopen(CHAT, "r");
+void print_chat(char username[]) {
+    char filename[256] = "chat_";
+    strcat(filename, username);
+    strcat(filename, ".txt");
+    FILE *file = fopen(filename, "r");
     if (file == NULL) {
         perror("error opening file");
         exit(1);
@@ -162,8 +168,5 @@ void clear_chat() {
 
 
 void send_public_message() {
-    
+
 }
-
-
-

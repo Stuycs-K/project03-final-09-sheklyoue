@@ -1,6 +1,6 @@
-compile: client server 
+compile: client server
 
-test: ncurses 
+test: ncurses
 
 functions.o: functions.c functions.h
 	@gcc -c functions.c
@@ -12,7 +12,7 @@ server.o: server.c functions.h
 	@gcc -c server.c
 
 ncurses.o: ncurses.c functions.h
-	@gcc -c ncurses.c 
+	@gcc -c ncurses.c
 
 client: client.o functions.o
 	@gcc -o client client.o functions.o -Wall
@@ -25,4 +25,4 @@ ncurses:
 
 clean:
 	rm -f *.o runme client server
-	rm -f chat.txt
+	rm -f *.txt

@@ -42,10 +42,7 @@ int main(int argc, char *argv[])  {
       return 1;
   }
 
-  // create chat file 
-  int chat = create_chat(); 
 
-  
   printf("Connected to server.\n");
   char welcome_message[256];
   char name[256];
@@ -65,24 +62,26 @@ int main(int argc, char *argv[])  {
     exit(1);
   }
 
+  // create chat file
+  int chat = create_chat(name);
 
 
   while (1) {
         clear_chat();
-        
+
         char buffer[BUFFER_SIZE];
         bytes = recv(client_socket, buffer, BUFFER_SIZE, MSG_DONTWAIT);
         if (bytes == 0) {
             printf("Server closed.\n");
             break;
-        } 
+        }
         else if (bytes > 0) {
           bytes = write(chat, buffer, strlen(buffer) + 1);
           if (bytes < 0) {
             perror("server write chat");
             exit(1);
           }
-          print_chat();
+          print_chat(name);
         }
 
         printf("Write your message\n");

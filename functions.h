@@ -7,8 +7,8 @@
 #include <netdb.h>
 #include <string.h>
 #include <errno.h>
-#include <signal.h> 
-#include <time.h> 
+#include <signal.h>
+#include <time.h>
 
 #ifndef FUNCTIONS_H
 #define FUNCTIONS_H
@@ -19,9 +19,6 @@
 #define CHAT "chat.txt"
 #define PORT "9998"
 
-struct user {
-  char username[100];
-};
 
 int server_setup();
 int server_connect(int listen_socket);
@@ -29,13 +26,13 @@ int handle_new_connection(int server_socket, int client_fds[], char client_names
 void read_from_client(char message[], int fd, int client_fds[], char client_names[][BUFFER_SIZE], fd_set *read_fds);
 void write_to_clients(char message[], int client_fds[]);
 void view_users();
-int create_chat();
+int create_chat(char username[]);
 void send_public_message();
-void print_chat();
+void print_chat(char username[]);
 void clear_chat();
 
 /*
-functions to add later 
+functions to add later
 int send_private_message();
 void connect();
 */
