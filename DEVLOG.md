@@ -52,6 +52,11 @@ Expanded description including how much time was spent on task.
 - need to look into ncurses 
 
 ### 2025-01-13 - ncurses
-- read up on ncurses 
+- read up on ncurses
 - did some testing with multi-windows 
 - planned out what the chat will look like
+
+### 2025-01-14
+- worked on creating the basic format of chat
+- making it take in messages
+- having trouble with sytnax
