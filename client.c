@@ -2,6 +2,11 @@
 
 
 int main()  {
+  WINDOW *chat_win = create_chat_win();
+  WINDOW *user_win = create_user_win();
+  WINDOW *message_win = create_message_win();
+  refresh();
+
   struct addrinfo hints, *res;
   char *host = "127.0.0.1";
   char *port = "9998";
@@ -27,34 +32,43 @@ int main()  {
       return 1;
   }
 
-  printf("Connected to server.\n");
+  mvwprintw(chat_win, 1, 1, "Connected to server.");
+  wrefresh(chat_win);
   char welcome_message[256];
   char name[256];
   read(client_socket, welcome_message, sizeof(welcome_message));
-  printf("%s\n", welcome_message);
-  printf("Please input your name: ");
-  fgets(name, sizeof(name), stdin);
+
+  wprintw(chat_win, "%s\n", welcome_message);
+  mvwprintw(message_win, 1, 1, "Please input your name: ");
+  wrefresh(message_win);
+  wgetstr(message_win, name);
   name[strlen(name) - 1] = '\0';
+
   write(client_socket, name, sizeof(name));
 
   while (1) {
-        clear_chat();
-        print_chat();
+        clear_chat(chat_win);
+        update_user_win(user_win);
+        wrefresh(chat_win);
+        //print_chat(win);
         
         char buffer[BUFFER_SIZE];
         int bytesRead = recv(client_socket, buffer, BUFFER_SIZE, MSG_DONTWAIT);
         if (bytesRead == 0) {
             printf("Server disconnected.\n");
+            delwin(chat_win);
+            delwin(user_win);
+            delwin(message_win);
             break;
         } 
         else if (bytesRead > 0) {
           //printf("received message: '%s'\n", buffer);
         }
 
-        printf("Write your message\n");
-        printf("> ");
+        //mvwprintw(win, 49, 1, "Write your message\n");
+        //mvwprintw(win, 50, 1, "> ");
         char message[BUFFER_SIZE];
-        fgets(message, sizeof(message), stdin);
+        //wgetstr(win, message);
 
         // Remove newline character
         message[strlen(message) - 1] = '\0';

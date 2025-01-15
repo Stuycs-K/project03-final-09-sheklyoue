@@ -1,8 +1,10 @@
 #include "functions.h" 
 
+char client_names[MAX_CLIENTS][BUFFER_SIZE];
+int client_fds[MAX_CLIENTS];
+
 int main() {
-    int client_fds[MAX_CLIENTS];
-    char client_names[MAX_CLIENTS][BUFFER_SIZE];
+    
     for (int c = 0; c < MAX_CLIENTS; c++) {
         client_fds[c] = 0;
         strcpy(client_names[c], "");
@@ -18,7 +20,7 @@ int main() {
 
 
     // create chat file
-    int chat = create_chat(); 
+    int chat = create_chat_log(); 
     
     while (1) {
         // create a copy since select modifies the set
@@ -115,4 +117,5 @@ int main() {
             }
         }
     }
+    endwin();
 }

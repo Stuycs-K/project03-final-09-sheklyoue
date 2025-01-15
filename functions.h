@@ -9,6 +9,7 @@
 #include <errno.h>
 #include <signal.h> 
 #include <time.h> 
+#include <ncurses.h>
 
 #ifndef FUNCTIONS_H
 #define FUNCTIONS_H
@@ -18,18 +19,20 @@
 #define WKP "lawric"
 #define CHAT "chat.txt"
 #define update_signal "update_SYN"
-
-struct user {
-  char username[100];
-};
+extern char client_names[MAX_CLIENTS][BUFFER_SIZE];
+extern int client_fds[MAX_CLIENTS];
 
 int server_setup();
 int server_connect(int listen_socket);
-void view_users();
-int create_chat();
+void update_user_win(WINDOW *win);
+int create_chat_log();
 void send_public_message();
-void print_chat();
-void clear_chat();
+void print_chat(WINDOW *win);
+void clear_chat(WINDOW *win);
+
+WINDOW *create_chat_win();
+WINDOW *create_user_win();
+WINDOW *create_message_win();
 
 /*
 functions to add later 
