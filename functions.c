@@ -72,7 +72,7 @@ int handle_new_connection(int server_socket, int client_fds[], char client_names
 }
 
 
-void read_from_client(int chat, int fd, int client_fds[], char client_names[][BUFFER_SIZE], fd_set *read_fds) {
+void read_from_client(char message[], int fd, int client_fds[], char client_names[][BUFFER_SIZE], fd_set *read_fds) {
     char buffer[BUFFER_SIZE]; 
     memset(buffer, 0, BUFFER_SIZE);
     int bytes; 
@@ -99,7 +99,6 @@ void read_from_client(int chat, int fd, int client_fds[], char client_names[][BU
     //printf("received from client '%s' (read %d bytes)\n", buffer, bytesRead);
     //printf("before writing to chat.txt\n");
     // send message to chat
-    char message[BUFFER_SIZE];
     for (int i = 0; i < MAX_CLIENTS; i++) {
         if (client_fds[i] == fd) {
             // append name
@@ -107,16 +106,17 @@ void read_from_client(int chat, int fd, int client_fds[], char client_names[][BU
             break;
         }
     }
+}
 
-    bytes = write(chat, message, strlen(message));
-    if (bytes < 0) {
-        perror("server write error");
-    }
 
-    //printf("sending signal");
+void write_to_clients(char message[], int client_fds[]) {
     for (int i = 0; i < MAX_CLIENTS; i++) {
         if (client_fds[i] > 0) {
-            write(client_fds[i], update_signal, sizeof(update_signal));
+            int bytes = write(client_fds[i], message, strlen(message) + 1);
+            if (bytes < 0) {
+                perror("write to client error");
+                exit(1);
+            }
         }
     }
 }

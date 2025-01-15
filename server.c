@@ -16,9 +16,6 @@ int main() {
     FD_SET(server_socket, &read_fds);
     max_descriptor = server_socket; 
 
-
-    // create chat file
-    int chat = create_chat(); 
     
     while (1) {
         // create a copy since select modifies the set
@@ -45,8 +42,9 @@ int main() {
                 }
             }
             else {
-                // receive message from a client 
-                read_from_client(chat, i, client_fds, client_names, &read_fds);
+                char message[BUFFER_SIZE];
+                read_from_client(message, i, client_fds, client_names, &read_fds);
+                write_to_clients(message, client_fds);
             }
         }
     }

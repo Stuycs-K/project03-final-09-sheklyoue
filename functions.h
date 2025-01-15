@@ -17,7 +17,6 @@
 #define MAX_CLIENTS 25
 #define WKP "lawric"
 #define CHAT "chat.txt"
-#define update_signal "update_SYN"
 #define PORT "9998"
 
 struct user {
@@ -27,7 +26,8 @@ struct user {
 int server_setup();
 int server_connect(int listen_socket);
 int handle_new_connection(int server_socket, int client_fds[], char client_names[][BUFFER_SIZE]);
-void read_from_client(int chat, int fd, int client_fds[], char client_names[][BUFFER_SIZE], fd_set *read_fds);
+void read_from_client(char message[], int fd, int client_fds[], char client_names[][BUFFER_SIZE], fd_set *read_fds);
+void write_to_clients(char message[], int client_fds[]);
 void view_users();
 int create_chat();
 void send_public_message();

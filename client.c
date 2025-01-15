@@ -14,7 +14,7 @@ static void sighandler(int signo) {
 int main(int argc, char *argv[])  {
   signal(SIGINT, sighandler);
   struct addrinfo hints, *res;
-  int bytesRead, bytesWritten;
+  int bytes;
 
   if (argc != 2) {
     fprintf(stderr,"usage: ./client hostname\n");
@@ -42,11 +42,15 @@ int main(int argc, char *argv[])  {
       return 1;
   }
 
+  // create chat file 
+  int chat = create_chat(); 
+
+  
   printf("Connected to server.\n");
   char welcome_message[256];
   char name[256];
-  bytesRead = read(client_socket, welcome_message, sizeof(welcome_message));
-  if (bytesRead < 0) {
+  bytes = read(client_socket, welcome_message, sizeof(welcome_message));
+  if (bytes < 0) {
     perror("failed to read welcome message");
     exit(1);
   }
@@ -55,25 +59,30 @@ int main(int argc, char *argv[])  {
   printf("Please input your name: ");
   fgets(name, sizeof(name), stdin);
   name[strlen(name) - 1] = '\0';
-  bytesWritten = write(client_socket, name, sizeof(name));
-  if (bytesWritten < 0) {
+  bytes = write(client_socket, name, sizeof(name));
+  if (bytes < 0) {
     perror("failed to send name to server");
     exit(1);
   }
 
 
+
   while (1) {
         clear_chat();
-        print_chat();
         
         char buffer[BUFFER_SIZE];
-        bytesRead = recv(client_socket, buffer, BUFFER_SIZE, MSG_DONTWAIT);
-        if (bytesRead == 0) {
+        bytes = recv(client_socket, buffer, BUFFER_SIZE, MSG_DONTWAIT);
+        if (bytes == 0) {
             printf("Server closed.\n");
             break;
         } 
-        else if (bytesRead > 0) {
-          printf("received message: '%s'\n", buffer);
+        else if (bytes > 0) {
+          bytes = write(chat, buffer, strlen(buffer) + 1);
+          if (bytes < 0) {
+            perror("server write chat");
+            exit(1);
+          }
+          print_chat();
         }
 
         printf("Write your message\n");
@@ -85,8 +94,8 @@ int main(int argc, char *argv[])  {
         message[strlen(message) - 1] = '\0';
 
         //printf("Sending message '%s'\n", message);
-        bytesWritten = write(client_socket, message, strlen(message) + 1);
-        if (bytesWritten < 0) {
+        bytes = write(client_socket, message, strlen(message) + 1);
+        if (bytes < 0) {
           perror("client write error");
           exit(1);
         }
