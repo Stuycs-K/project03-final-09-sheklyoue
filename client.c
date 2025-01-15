@@ -76,7 +76,7 @@ int main(int argc, char *argv[])  {
             break;
         }
         else if (bytes > 0) {
-          bytes = write(chat, buffer, strlen(buffer) + 1);
+          bytes = write(chat, buffer, strlen(buffer));
           if (bytes < 0) {
             perror("server write chat");
             exit(1);
