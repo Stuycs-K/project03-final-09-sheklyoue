@@ -137,5 +137,15 @@ void send_public_message() {
     
 }
 
+void display_message_prompt(WINDOW *message_win) {
+    refresh();
+    wclear(message_win);
+    box(message_win, 0, 0);
+    wrefresh(message_win);
+    mvwprintw(message_win, 1, 1, "Write your message");
+    mvwprintw(message_win, 2, 1, "> ");
+    wrefresh(message_win);
+}
+
 
 

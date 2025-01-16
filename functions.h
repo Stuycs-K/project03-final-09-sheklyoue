@@ -30,6 +30,7 @@ int create_chat_log();
 void send_public_message();
 void print_chat(WINDOW *win);
 void clear_chat(WINDOW *win);
+void display_message_prompt(WINDOW *message_win);
 
 WINDOW *create_chat_win();
 WINDOW *create_user_win();

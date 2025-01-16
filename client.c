@@ -59,12 +59,7 @@ int main()  {
     FD_SET(STDIN_FILENO, &readfds);
     
     while (1) {
-        refresh();
-        wclear(message_win);
-        box(message_win, 0, 0);
-        wrefresh(message_win);
-        mvwprintw(message_win, 1, 1, "Write your message");
-        mvwprintw(message_win, 2, 1, "> ");
+        display_message_prompt(message_win);
         fd_set tempfds = readfds; 
 
         if (select(FD_SETSIZE, &tempfds, NULL, NULL, NULL) < 0) {
@@ -77,6 +72,7 @@ int main()  {
             // clear_chat(chat_win);
             // update_user_win(user_win, client_fds, client_names);
             // print_chat(chat_win);
+            display_message_prompt(message_win);
             
             char buffer[256];
             int bytesRead = recv(client_socket, buffer, sizeof(buffer), MSG_DONTWAIT);
@@ -90,7 +86,6 @@ int main()  {
                 delwin(chat_win);
                 delwin(user_win);
                 delwin(message_win);
-                break;
             }
 
             // if (signal == update_signal) { 
@@ -104,14 +99,10 @@ int main()  {
         //message[strlen(message)] = '\0';
 
         if (FD_ISSET(STDIN_FILENO, &tempfds)) {
-            mvwprintw(message_win, 1, 1, "Write your message");
-            mvwprintw(message_win, 2, 1, "> ");
+            display_message_prompt(message_win);
             char message[BUFFER_SIZE];
             if (wgetstr(message_win, message) == 0) {
-                refresh();
-                wclear(message_win);
-                box(message_win, 0, 0);
-                wrefresh(message_win);
+                display_message_prompt(message_win);
             }
 
             int bytesWritten = write(client_socket, message, strlen(message) + 1);

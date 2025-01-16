@@ -113,18 +113,15 @@ int main() {
                         }
                     }
 
-                    int bytesWritten = write(chat, message, strlen(message));
-                    if (bytesWritten < 0) {
-                        perror("server write error");
+                    for (int c = 0; c < MAX_CLIENTS; c++) {
+                        if (client_fds[c] > 0) {
+                            //printf("sent message back to client");
+                            int bytesWritten = write(client_fds[c], message, strlen(message));
+                            if (bytesWritten < 0) {
+                                perror("server write error");
+                            }
+                        }
                     }
-
-                    //printf("sending signal");
-                    // int signal = 2222;
-                    // for (int c = 0; c < MAX_CLIENTS; c++) {
-                    //     if (client_fds[c] > 0) {
-                    //         write(client_fds[c], signal, sizeof(signal));
-                    //     }
-                    // }
                 }
 
             }
