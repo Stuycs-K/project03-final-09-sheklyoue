@@ -46,17 +46,6 @@ int main(int argc, char *argv[])  {
         return 1;
     }
 
-    if (getaddrinfo(host, port, &hints, &res) != 0) {
-        perror("getaddrinfo");
-        return 1;
-    }
-
-    int client_socket = socket(res->ai_family, res->ai_socktype, res->ai_protocol);
-    if (client_socket == -1) {
-        perror("socket");
-        return 1;
-    }
-
     if (connect(client_socket, res->ai_addr, res->ai_addrlen) == -1) {
         perror("connect");
         close(client_socket);
@@ -103,7 +92,8 @@ int main(int argc, char *argv[])  {
             char buffer[256];
             int bytesRead = recv(client_socket, buffer, sizeof(buffer), MSG_DONTWAIT);
             if (bytesRead > 0) {
-                int bytes = write(chat, buffer, sizeof(buffer));
+                int bytes = write(chat, buffer, strlen(buffer));
+                wprintw(message_win, "%s\n", buffer);
                 if (bytes < 0) {
                     perror("line 108 error");
                     exit(1);
@@ -111,7 +101,7 @@ int main(int argc, char *argv[])  {
                 refresh();
                 clear_chat(chat_win);
                 update_user_win(user_win, client_fds, client_names);
-                print_chat(chat_win);
+                print_chat(chat_win, name);
             } else {
                 printf("Server disconnected.\n");
                 delwin(chat_win);
