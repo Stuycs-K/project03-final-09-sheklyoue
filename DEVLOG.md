@@ -36,6 +36,10 @@ This document must be updated daily by EACH group member.
 - instead of the server writing to a chat file, server writes to each of the clients (who will each have their own individual chat files to read from)
   - if server is not local host, old version of having a single chat file wouldn't work
  
+### 2025-01-15 - Debugging
+- having issues with clients getting messages from server
+- need to have each client update messages automatically, without blokcing
+- need to do more debugging
 
 ## Eric
 
