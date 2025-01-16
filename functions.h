@@ -19,6 +19,7 @@
 #define WKP "lawric"
 #define CHAT "chat.txt"
 #define update_signal 2222
+#define PORT "9998"
 
 extern char client_names[MAX_CLIENTS][BUFFER_SIZE];
 extern int client_fds[MAX_CLIENTS];
@@ -26,9 +27,6 @@ extern int client_fds[MAX_CLIENTS];
 int server_setup();
 int server_connect(int listen_socket);
 void update_user_win(WINDOW *win, int* client_fds, char client_names[][BUFFER_SIZE]);
-int create_chat_log();
-void send_public_message();
-void print_chat(WINDOW *win);
 void clear_chat(WINDOW *win);
 void display_message_prompt(WINDOW *message_win);
 
@@ -36,10 +34,12 @@ WINDOW *create_chat_win();
 WINDOW *create_user_win();
 WINDOW *create_message_win();
 
-/*
-functions to add later 
-int send_private_message();
-void connect();
-*/
+
+int handle_new_connection(int server_socket, int client_fds[], char client_names[][BUFFER_SIZE]);
+void read_from_client(char message[], int fd, int client_fds[], char client_names[][BUFFER_SIZE], fd_set *read_fds);
+void write_to_clients(char message[], int client_fds[]);
+void view_users();
+int create_chat(char username[]);
+void print_chat(WINDOW *win, char username[]);
 
 #endif

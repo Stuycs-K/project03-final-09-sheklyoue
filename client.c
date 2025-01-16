@@ -1,7 +1,20 @@
 #include "functions.h"
 
-int main()  {
+int client_socket;
+struct addrinfo *res;
+
+static void sighandler(int signo) {
+  close(client_socket);
+  freeaddrinfo(res);
+  printf("\nDisconnected from server.\n");
+  exit(0);
+}
+
+
+int main(int argc, char *argv[])  {
+    signal(SIGINT, sighandler);
     fd_set readfds;
+
     char client_names[MAX_CLIENTS][BUFFER_SIZE];
     int client_fds[MAX_CLIENTS];
 
@@ -9,14 +22,29 @@ int main()  {
     WINDOW *user_win = create_user_win();
     WINDOW *message_win = create_message_win();
     refresh();
-
+    
     struct addrinfo hints, *res;
-    char *host = "127.0.0.1";
-    char *port = "9998";
+    int bytes;
 
+    if (argc != 2) {
+        fprintf(stderr,"usage: ./client hostname\n");
+        exit(1);
+    }
+    char *host = argv[1];
     memset(&hints, 0, sizeof(hints));
     hints.ai_family = AF_INET;
     hints.ai_socktype = SOCK_STREAM;
+
+    if (getaddrinfo(host, PORT, &hints, &res) != 0) {
+        perror("getaddrinfo");
+        return 1;
+    }
+
+    client_socket = socket(res->ai_family, res->ai_socktype, res->ai_protocol);
+    if (client_socket == -1) {
+        perror("socket");
+        return 1;
+    }
 
     if (getaddrinfo(host, port, &hints, &res) != 0) {
         perror("getaddrinfo");
@@ -54,6 +82,8 @@ int main()  {
 
     write(client_socket, name, sizeof(name));
 
+    int chat = create_chat(name);
+
     FD_ZERO(&readfds);
     FD_SET(client_socket, &readfds);
     FD_SET(STDIN_FILENO, &readfds);
@@ -68,15 +98,16 @@ int main()  {
         }
 
         if (FD_ISSET(client_socket, &tempfds)) {
-            // refresh();
-            // clear_chat(chat_win);
-            // update_user_win(user_win, client_fds, client_names);
-            // print_chat(chat_win);
             display_message_prompt(message_win);
             
             char buffer[256];
             int bytesRead = recv(client_socket, buffer, sizeof(buffer), MSG_DONTWAIT);
             if (bytesRead > 0) {
+                int bytes = write(chat, buffer, sizeof(buffer));
+                if (bytes < 0) {
+                    perror("line 108 error");
+                    exit(1);
+                }
                 refresh();
                 clear_chat(chat_win);
                 update_user_win(user_win, client_fds, client_names);
@@ -88,15 +119,7 @@ int main()  {
                 delwin(message_win);
             }
 
-            // if (signal == update_signal) { 
-            //     refresh();
-            //     clear_chat(chat_win);
-            //     print_chat(chat_win);
-            // }
         }
-
-        // Remove newline character
-        //message[strlen(message)] = '\0';
 
         if (FD_ISSET(STDIN_FILENO, &tempfds)) {
             display_message_prompt(message_win);
