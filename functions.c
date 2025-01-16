@@ -1,5 +1,7 @@
 #include "functions.h"
 
+// extern char client_names[MAX_CLIENTS][BUFFER_SIZE];
+// extern int client_fds[MAX_CLIENTS];
 
 int server_setup() {
   struct addrinfo * hints, * results;//results is allocated in getaddrinfo
@@ -90,12 +92,15 @@ WINDOW *create_message_win() {
 }
 
 //Prints out a list of all the current users in the chat
-void update_user_win(WINDOW *win) {
-    int h = 1;
+void update_user_win(WINDOW *win, int* client_fds, char client_names[][BUFFER_SIZE]) {
+    int h = 2;
+    mvwprintw(win, 1, 1, "USER LIST");
     for (int c = 0; c < MAX_CLIENTS; c++) {
         if (client_fds[c] > 0) {
+            refresh();
             mvwprintw(win, h, 1, "%s", client_names[c]);
             h++;
+            wrefresh(win);
         }
     }
 }
@@ -110,10 +115,11 @@ void print_chat(WINDOW *win) {
     }
 
     char buffer[BUFFER_SIZE];
+    int h = 1;
     while (fgets(buffer, sizeof(buffer), file) != NULL) {
-        wprintw(win,"%s", buffer);
+        mvwprintw(win,h, 1, "%s", buffer);
+        h++;
     }
-    wprintw(win, "\n");
     wrefresh(win);
     fclose(file);
 }
@@ -122,6 +128,7 @@ void print_chat(WINDOW *win) {
 //Clears all text on the terminal
 void clear_chat(WINDOW *win) {
     wclear(win);
+    box(win, 0, 0);
     wrefresh(win);
 }
 

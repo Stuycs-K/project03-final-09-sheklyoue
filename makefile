@@ -15,10 +15,10 @@ client: client.o functions.o
 server: server.o functions.o
 	@gcc -o server server.o functions.o -Wall -lncurses
 
-testing.o: testing.c
+testing.o: testing.c functions.h
 	@gcc -c testing.c
 
-ncurse: testing.o
+ncurse: testing.o functions.o 
 	@gcc -o ncur testing.o functions.o -lncurses
 
 ncur: ncurse

@@ -1,10 +1,8 @@
 #include "functions.h" 
 
-char client_names[MAX_CLIENTS][BUFFER_SIZE];
-int client_fds[MAX_CLIENTS];
-
 int main() {
-    
+    char client_names[MAX_CLIENTS][BUFFER_SIZE];
+    int client_fds[MAX_CLIENTS];
     for (int c = 0; c < MAX_CLIENTS; c++) {
         client_fds[c] = 0;
         strcpy(client_names[c], "");
@@ -64,8 +62,22 @@ int main() {
                 if (client_socket > max_descriptor) {
                     max_descriptor = client_socket; 
                 }
+                
+                // for (int c = 0; c < MAX_CLIENTS; c++) {
+                //     if (client_fds[c] > 0) {
+                //         write(client_fds[c], client_fds, sizeof(client_fds));
+                //         write(client_fds[c], client_names, sizeof(client_names));
+                //     }
+                // }
             }
             else {
+                // for (int c = 0; c < MAX_CLIENTS; c++) {
+                //     if (client_fds[c] > 0) {
+                //         write(client_fds[c], client_fds, sizeof(client_fds));
+                //         write(client_fds[c], client_names, sizeof(client_names));
+                //     }
+                // }
+
                 // receive message from a client 
                 char buffer[BUFFER_SIZE]; 
                 memset(buffer, 0, BUFFER_SIZE);
@@ -107,11 +119,12 @@ int main() {
                     }
 
                     //printf("sending signal");
-                    for (int c = 0; c < MAX_CLIENTS; c++) {
-                        if (client_fds[c] > 0) {
-                            write(client_fds[c], update_signal, sizeof(update_signal));
-                        }
-                    }
+                    // int signal = 2222;
+                    // for (int c = 0; c < MAX_CLIENTS; c++) {
+                    //     if (client_fds[c] > 0) {
+                    //         write(client_fds[c], signal, sizeof(signal));
+                    //     }
+                    // }
                 }
 
             }

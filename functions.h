@@ -18,13 +18,14 @@
 #define MAX_CLIENTS 25
 #define WKP "lawric"
 #define CHAT "chat.txt"
-#define update_signal "update_SYN"
+#define update_signal 2222
+
 extern char client_names[MAX_CLIENTS][BUFFER_SIZE];
 extern int client_fds[MAX_CLIENTS];
 
 int server_setup();
 int server_connect(int listen_socket);
-void update_user_win(WINDOW *win);
+void update_user_win(WINDOW *win, int* client_fds, char client_names[][BUFFER_SIZE]);
 int create_chat_log();
 void send_public_message();
 void print_chat(WINDOW *win);
