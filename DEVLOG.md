@@ -59,4 +59,12 @@ Expanded description including how much time was spent on task.
 ### 2025-01-14
 - worked on creating the basic format of chat
 - making it take in messages
+- tried to create a user list
 - having trouble with sytnax
+
+### 2025-01-14
+- the chat format works
+- chat is updating and messages are being sent
+- however, chat is not being constantly updated
+- user list also not working 
+- need to find a way to send all client info over to each client 
