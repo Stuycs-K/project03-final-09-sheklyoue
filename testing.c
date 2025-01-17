@@ -1,65 +1,54 @@
-#include "functions.h"
+#include <ncurses.h>
 
-char client_names[MAX_CLIENTS][BUFFER_SIZE];
-int client_fds[MAX_CLIENTS];
+int main() {
+    // Initialize ncurses
+    initscr();
+    cbreak();    // Disable line buffering
+    noecho();    // Don't echo input characters
+    curs_set(0); // Hide the cursor
 
-int main() {    
+    // Create a large pad
+    int pad_height = 100, pad_width = 80;
+    WINDOW *pad = newpad(pad_height, pad_width);
 
-    client_fds[0] = 4;
-    client_fds[1] = 4;
-    client_fds[2] = 4;
+    // Add some content to the pad
+    for (int i = 0; i < pad_height; i++) {
+        mvwprintw(pad, i, 0, "This is line %d in the pad", i + 1);
+    }
 
-    strcpy(client_names[0], "Steve");
-    strcpy(client_names[1], "Bob");
-    strcpy(client_names[2], "Law");
+    // Create a smaller window to display part of the pad
+     int win_height = 20, win_width = 40;
+    // WINDOW *win = newwin(win_height, win_width, 0, 0);
 
-    WINDOW *chat_win = create_chat_win();
-    WINDOW *user_win = create_user_win();
-    WINDOW *message_win = create_message_win();
+    // Initially show the top-left portion of the pad in the window
+    prefresh(pad, 0, 0, 0, 0, win_height, win_width);
+    //wrefresh(win); // Refresh the window to show the pad content
 
-    update_user_win(user_win);
+    // Scroll through the pad using arrow keys
+    int top = 0, left = 0;
+    while (1) {
+        int ch = getch();
+        if (ch == 'q') {
+            break;  // Quit if the user presses 'q'
+        } else if (ch == KEY_DOWN && top + win_height < pad_height) {
+            top++;  // Scroll down
+        } else if (ch == KEY_UP && top > 0) {
+            top--;  // Scroll up
+        } else if (ch == KEY_RIGHT && left + win_width < pad_width) {
+            left++;  // Scroll right
+        } else if (ch == KEY_LEFT && left > 0) {
+            left--;  // Scroll left
+        }
 
-    /*
-    initscr();            // Initialize ncurses
-    cbreak();             // Disable line buffering
-    noecho();             // Disable echoing of typed characters
-    keypad(stdscr, TRUE); // Enable special keys like arrow keys
+        // Update the window with the new portion of the pad
+        prefresh(pad, top, left, 0, 0, win_height, win_width);
+        //wrefresh(win);  // Refresh the window
+    }
 
-    // Create a main window
-    int height = 10, width = 40, starty = 5, startx = 10;
-    WINDOW *main_win = newwin(height, width, starty, startx);
-    refresh();
-    box(main_win, 0, 0); 
-    wrefresh(main_win);
-
+    // Clean up and close ncurses
+    //delwin(win);
+    delwin(pad);
+    endwin();
     
-    // Create a subwindow within the main window
-    int sub_height = 4, sub_width = 40, sub_y = 15, sub_x = 10;
-    WINDOW *sub_win = newwin(sub_height, sub_width, sub_y, sub_x);
-    refresh();
-    box(sub_win, 0, 0);    // Draw a border around the subwindow
-    wrefresh(sub_win);     // Refresh the subwindow
-
-    // Display some text in the subwindow
-    mvwprintw(sub_win, 1, 1, "Type a Message: ");
-    wrefresh(sub_win);     // Refresh the subwindow to display the text
-    
-    WINDOW *user = newwin(14, 20, 5, 50);
-    refresh();
-    box(user, 0, 0);
-    wrefresh(user);
-    mvwprintw(user, 1, 1, "User List: ");
-    wrefresh(user);
-    
-    // Wait for user input
-    getch();
-
-    // Clean up
-    delwin(sub_win);  // Delete the subwindow
-    delwin(main_win); // Delete the main window
-    delwin(user);
-    endwin();         // End ncurses mode
-    */
     return 0;
 }
-
