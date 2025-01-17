@@ -144,6 +144,7 @@ WINDOW *create_chat_win() {
 
     int chat_h = 25, chat_w = 70, chat_y = 5, chat_x = 10;
     WINDOW *win = newwin(chat_h, chat_w, chat_y, chat_x);
+    scrollok(win, TRUE); 
     refresh();
     box(win, 0, 0);
     wrefresh(win);
