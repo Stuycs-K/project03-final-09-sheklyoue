@@ -71,9 +71,15 @@ This document must be updated daily by EACH group member.
 - tried to create a user list
 - having trouble with sytnax
 
-### 2025-01-14
+### 2025-01-15
 - the chat format works
 - chat is updating and messages are being sent
 - however, chat is not being constantly updated
 - user list also not working 
 - need to find a way to send all client info over to each client 
+
+### 2025-01-16
+- merged with lawrence
+- chat works (messaging, chat is updating constantly)
+- next goal : add scrolling to chat window & get user panel working
+
