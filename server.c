@@ -56,43 +56,12 @@ int main() {
                 // }
 
                 // receive message from a client 
-                char buffer[BUFFER_SIZE]; 
-                memset(buffer, 0, BUFFER_SIZE);
-
-                int bytesRead = read(i, buffer, sizeof(buffer));
-                if (bytesRead < 0) {
-                    perror("server read error");
-                    exit(1);
-                }
-
-                if (bytesRead == 0) {
-                    // done reading, remove socket from list of available file descriptors to read from
-                    for(int c = 0; c < MAX_CLIENTS; c++) {
-                        if (client_fds[c] == i) {
-                            client_fds[c] = 0;
-                            printf("%s disconnected!\n", client_names[c]);
-                            strcpy(client_names[c], ""); 
-                            break;
-                        }
-                    }
-                    FD_CLR(i, &read_fds); 
-                }
-                else {
-                    //printf("received from client '%s' (read %d bytes)\n", buffer, bytesRead);
-                    //printf("before writing to chat.txt\n");
-                    // send message to chat
+                
                     char message[BUFFER_SIZE];
-                    for (int c = 0; c < MAX_CLIENTS; c++) {
-                        if (client_fds[c] == i) {
-                            // append name
-                            sprintf(message, "[%s] %s\n", client_names[c], buffer);
-                            break;
-                        }
-                    }
 
                     read_from_client(message, i, client_fds, client_names, &read_fds);
                     write_to_clients(message, client_fds);
-                }
+                
 
             }
         }

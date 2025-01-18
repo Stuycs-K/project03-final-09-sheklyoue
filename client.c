@@ -101,7 +101,7 @@ int main(int argc, char *argv[])  {
                 }
                 refresh();
                 clear_chat(chat_win);
-                update_user_win(user_win, client_fds, client_names);
+                //update_user_win(user_win, client_fds, client_names);
                 print_chat(chat_win, name);
             } else {
                 printf("Server disconnected.\n");
