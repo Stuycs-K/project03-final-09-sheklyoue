@@ -223,6 +223,3 @@ void display_message_prompt(WINDOW *message_win) {
     mvwprintw(message_win, 2, 1, "> ");
     wrefresh(message_win);
 }
-
-
-

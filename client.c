@@ -19,6 +19,7 @@ int main(int argc, char *argv[])  {
     int client_fds[MAX_CLIENTS];
 
     WINDOW *chat_win = create_chat_win();
+    //scrollok(chat_win, TRUE); 
     WINDOW *user_win = create_user_win();
     WINDOW *message_win = create_message_win();
     refresh();
