@@ -2,12 +2,22 @@
 
 int client_socket;
 struct addrinfo *res;
+char name[256];
+
 
 static void sighandler(int signo) {
-  close(client_socket);
-  freeaddrinfo(res);
-  printf("\nDisconnected from server.\n");
-  exit(0);
+    char message[BUFFER_SIZE];
+    strcpy(message, name);
+    strcat(message, " disconnected.");
+    int bytes = write(client_socket, name, strlen(message) + 1);
+    if (bytes < 0) {
+        perror("send disconnect");
+        exit(1);
+    }
+    close(client_socket);
+    freeaddrinfo(res);
+    printf("\nDisconnected from server.\n");
+    exit(0);
 }
 
 
@@ -56,8 +66,12 @@ int main(int argc, char *argv[])  {
     mvwprintw(chat_win, 1, 1, "Connected to server.");
     wrefresh(chat_win);
     char welcome_message[256];
-    char name[256];
-    read(client_socket, welcome_message, sizeof(welcome_message));
+    bytes = read(client_socket, welcome_message, sizeof(welcome_message));
+    if (bytes < 0) {
+        perror("read welcome message");
+        exit(1);
+    }
+
 
     wprintw(chat_win, "%s\n", welcome_message);
     mvwprintw(message_win, 1, 1, "Please input your name: ");
@@ -70,7 +84,11 @@ int main(int argc, char *argv[])  {
     }
     name[strlen(name)] = '\0';
 
-    write(client_socket, name, sizeof(name));
+    bytes = write(client_socket, name, sizeof(name));
+    if (bytes < 0) {
+        perror("fail to write user name to server");
+        exit(1);
+    }
 
     int chat = create_chat(name);
 
@@ -91,9 +109,9 @@ int main(int argc, char *argv[])  {
             display_message_prompt(message_win);
             
             char buffer[256];
-            int bytesRead = recv(client_socket, buffer, sizeof(buffer), MSG_DONTWAIT);
-            if (bytesRead > 0) {
-                int bytes = write(chat, buffer, strlen(buffer));
+            bytes = recv(client_socket, buffer, sizeof(buffer), MSG_DONTWAIT);
+            if (bytes > 0) {
+                bytes = write(chat, buffer, strlen(buffer));
                 wprintw(message_win, "%s\n", buffer);
                 if (bytes < 0) {
                     perror("line 108 error");
@@ -119,8 +137,8 @@ int main(int argc, char *argv[])  {
                 display_message_prompt(message_win);
             }
 
-            int bytesWritten = write(client_socket, message, strlen(message) + 1);
-            if (bytesWritten < 0) {
+            bytes = write(client_socket, message, strlen(message) + 1);
+            if (bytes < 0) {
                 perror("client write error");
                 exit(1);
             }

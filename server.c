@@ -39,30 +39,12 @@ int main() {
                 if (client_socket > max_descriptor) {
                     max_descriptor = client_socket;
                 }
-                
-                // for (int c = 0; c < MAX_CLIENTS; c++) {
-                //     if (client_fds[c] > 0) {
-                //         write(client_fds[c], client_fds, sizeof(client_fds));
-                //         write(client_fds[c], client_names, sizeof(client_names));
-                //     }
-                // }
             }
             else {
-                // for (int c = 0; c < MAX_CLIENTS; c++) {
-                //     if (client_fds[c] > 0) {
-                //         write(client_fds[c], client_fds, sizeof(client_fds));
-                //         write(client_fds[c], client_names, sizeof(client_names));
-                //     }
-                // }
+                char message[BUFFER_SIZE];
 
-                // receive message from a client 
-                
-                    char message[BUFFER_SIZE];
-
-                    read_from_client(message, i, client_fds, client_names, &read_fds);
-                    write_to_clients(message, client_fds);
-                
-
+                read_from_client(message, i, client_fds, client_names, &read_fds);
+                write_to_clients(message, client_fds);
             }
         }
     }
