@@ -160,6 +160,7 @@ WINDOW *create_user_win() {
     WINDOW *user_win = newwin(user_h, user_w, user_y, user_x);
     refresh();
     box(user_win, 0, 0);
+    mvwprintw(user_win, 1, 1, "USER LIST");
     wrefresh(user_win);
     return user_win;
 }
@@ -176,8 +177,8 @@ WINDOW *create_message_win() {
 
 //Prints out a list of all the current users in the chat
 void update_user_win(WINDOW *win, char client_names[][BUFFER_SIZE]) {
-    int h = 2;
     mvwprintw(win, 1, 1, "USER LIST");
+    int h = 2;
     for (int c = 0; c < MAX_CLIENTS; c++) {
         if (strlen(client_names[c]) > 0 ) {
             refresh();

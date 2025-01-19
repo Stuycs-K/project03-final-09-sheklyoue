@@ -53,6 +53,7 @@ int main() {
                     write(user_fds[c], client_names, sizeof(client_names));
                 }
             }
+
         }
     }
     endwin();
