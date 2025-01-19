@@ -27,7 +27,7 @@ extern int client_fds[MAX_CLIENTS];
 int server_setup();
 int server_connect(int listen_socket);
 void update_user_win(WINDOW *win, int* client_fds, char client_names[][BUFFER_SIZE]);
-void clear_chat(WINDOW *win);
+void clear_window(WINDOW *win);
 void display_message_prompt(WINDOW *message_win);
 
 WINDOW *create_chat_win();

@@ -3,11 +3,14 @@
 int client_socket;
 struct addrinfo *res;
 
+WINDOW *chat_win;
+WINDOW *user_win;
+WINDOW *message_win;
 
 static void sighandler(int signo) {
     close(client_socket);
     freeaddrinfo(res);
-    printf("\nDisconnected from server.\n");
+    printf("Disconnected from server.\n");
     exit(0);
 }
 
@@ -19,10 +22,9 @@ int main(int argc, char *argv[])  {
     char client_names[MAX_CLIENTS][BUFFER_SIZE];
     int client_fds[MAX_CLIENTS];
 
-    WINDOW *chat_win = create_chat_win();
-    //scrollok(chat_win, TRUE); 
-    WINDOW *user_win = create_user_win();
-    WINDOW *message_win = create_message_win();
+    chat_win = create_chat_win();
+    user_win = create_user_win();
+    message_win = create_message_win();
     refresh();
     
     struct addrinfo hints, *res;
@@ -110,7 +112,7 @@ int main(int argc, char *argv[])  {
                     exit(1);
                 }
                 refresh();
-                clear_chat(chat_win);
+                clear_window(chat_win);
                 //update_user_win(user_win, client_fds, client_names);
                 print_chat(chat_win, name);
             } else {

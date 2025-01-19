@@ -183,7 +183,7 @@ void update_user_win(WINDOW *win, int* client_fds, char client_names[][BUFFER_SI
         if (client_fds[c] > 0) {
             refresh();
             mvwprintw(win, h, 1, "%s", client_names[c]);
-            h++;
+            h = 2;
             wrefresh(win);
         }
     }
@@ -202,10 +202,16 @@ void print_chat(WINDOW *win, char username[]) {
     }
 
     char buffer[BUFFER_SIZE];
-    int h = 1;
+    int h = 0;
     while (fgets(buffer, sizeof(buffer), file) != NULL) {
-        mvwprintw(win,h, 1, "%s", buffer);
-        h++;
+        if (h >= 23) {
+            clear_window(win);
+            h = 1;
+            mvwprintw(win,h, 1, "%s", buffer);
+        } else {
+            h++;
+            mvwprintw(win,h, 1, "%s", buffer);
+        }
     }
     wrefresh(win);
     fclose(file);
@@ -213,7 +219,7 @@ void print_chat(WINDOW *win, char username[]) {
 
 
 //Clears all text on the terminal
-void clear_chat(WINDOW *win) {
+void clear_window(WINDOW *win) {
     wclear(win);
     box(win, 0, 0);
     wrefresh(win);
