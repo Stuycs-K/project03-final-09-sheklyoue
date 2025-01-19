@@ -1,8 +1,5 @@
 #include "functions.h"
 
-// extern char client_names[MAX_CLIENTS][BUFFER_SIZE];
-// extern int client_fds[MAX_CLIENTS];
-
 int server_setup() {
   struct addrinfo * hints, * results;//results is allocated in getaddrinfo
   hints = calloc(1,sizeof(struct addrinfo));
@@ -199,6 +196,7 @@ void print_chat(WINDOW *win, char username[]) {
     char buffer[BUFFER_SIZE];
     int h = 0;
     while (fgets(buffer, sizeof(buffer), file) != NULL) {
+        buffer[strlen(buffer)-1] = 0; 
         if (h >= 23) {
             clear_window(win);
             h = 1;
