@@ -66,6 +66,7 @@ int handle_new_connection(int server_socket, int client_fds[], char client_names
         if (client_fds[i] == 0) {
             client_fds[i] = client_socket;
             strcpy(client_names[i], name);
+            // server side (for debug) 
             printf("Client [%s] connected\n", client_names[i]);
             break;
         }
