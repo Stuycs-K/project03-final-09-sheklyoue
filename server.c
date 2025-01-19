@@ -3,12 +3,14 @@
 int main() {
     char client_names[MAX_CLIENTS][BUFFER_SIZE];
     int client_fds[MAX_CLIENTS];
+    int user_fds[MAX_CLIENTS];
     for (int c = 0; c < MAX_CLIENTS; c++) {
         client_fds[c] = 0;
         strcpy(client_names[c], "");
     }
     int max_descriptor = 0;
-    int server_socket = server_setup(); 
+    int server_socket = server_setup(CHAT_PORT); 
+    int user_socket = server_setup(USER_PORT);
 
     fd_set read_fds;
     
@@ -32,37 +34,24 @@ int main() {
             }
             if (i == server_socket) {
                 // accept new connection 
-                int client_socket = handle_new_connection(server_socket, client_fds, client_names);
+                int client_socket = handle_new_connection(server_socket, user_socket, client_fds, client_names, user_fds);
                 // add socket to fdset
                 FD_SET(client_socket, &read_fds);
                 // update max_descriptor 
                 if (client_socket > max_descriptor) {
                     max_descriptor = client_socket;
                 }
-                
-                // for (int c = 0; c < MAX_CLIENTS; c++) {
-                //     if (client_fds[c] > 0) {
-                //         write(client_fds[c], client_fds, sizeof(client_fds));
-                //         write(client_fds[c], client_names, sizeof(client_names));
-                //     }
-                // }
+
+                for (int c = 0; c < MAX_CLIENTS; c++) {
+                    if (client_fds[c] > 0) {
+                        write(user_fds[c], client_names, sizeof(client_names));
+                    }
+                }
             }
             else {
-                // for (int c = 0; c < MAX_CLIENTS; c++) {
-                //     if (client_fds[c] > 0) {
-                //         write(client_fds[c], client_fds, sizeof(client_fds));
-                //         write(client_fds[c], client_names, sizeof(client_names));
-                //     }
-                // }
-
-                // receive message from a client 
-                
-                    char message[BUFFER_SIZE];
-
-                    read_from_client(message, i, client_fds, client_names, &read_fds);
-                    write_to_clients(message, client_fds);
-                
-
+                char message[BUFFER_SIZE];
+                read_from_client(message, i, client_fds, client_names, &read_fds);
+                write_to_clients(message, client_fds);
             }
         }
     }

@@ -1,13 +1,13 @@
 #include "functions.h"
 
-int server_setup() {
+int server_setup(char* port_id) {
   struct addrinfo * hints, * results;//results is allocated in getaddrinfo
   hints = calloc(1,sizeof(struct addrinfo));
 
   hints->ai_family = AF_INET; // domain of socket (tpye of address)
   hints->ai_socktype = SOCK_STREAM; //TCP socket
   hints->ai_flags = AI_PASSIVE; //only needed on server
-  getaddrinfo(NULL, PORT, hints, &results);  //NULL is localhost or 127.0.0.1
+  getaddrinfo(NULL, port_id, hints, &results);  //NULL is localhost or 127.0.0.1
 
   //create listen socket
   int listen_socket = socket(results->ai_family, results->ai_socktype, results->ai_protocol);
@@ -28,7 +28,7 @@ int server_setup() {
   }
   // listen socket
   listen(listen_socket, MAX_CLIENTS);//3 clients can wait to be processed
-  printf("Listening on port %s\n",PORT);
+  printf("Listening on port %s\n",port_id);
 
   return listen_socket;
 }
@@ -43,8 +43,9 @@ int server_connect(int listen_socket) {
     return client_socket;
 }
 
-int handle_new_connection(int server_socket, int client_fds[], char client_names[][BUFFER_SIZE]) {
+int handle_new_connection(int server_socket, int user_socket, int client_fds[], char client_names[][BUFFER_SIZE], int user_fds[]) {
     int client_socket = server_connect(server_socket);
+    int new_user_socket = server_connect(user_socket);
 
     char welcome_message[256] = "Welcome to the chat!";
     if (write(client_socket, welcome_message, sizeof(welcome_message)) < 0) {
@@ -61,6 +62,7 @@ int handle_new_connection(int server_socket, int client_fds[], char client_names
     // add new client to list of fd
     for (int i = 0; i < MAX_CLIENTS; i++) {
         if (client_fds[i] == 0) {
+            user_fds[i] = new_user_socket;
             client_fds[i] = client_socket;
             strcpy(client_names[i], name);
             printf("Client [%s] connected\n", client_names[i]);
@@ -168,14 +170,14 @@ WINDOW *create_message_win() {
 }
 
 //Prints out a list of all the current users in the chat
-void update_user_win(WINDOW *win, int* client_fds, char client_names[][BUFFER_SIZE]) {
+void update_user_win(WINDOW *win, char client_names[][BUFFER_SIZE]) {
     int h = 2;
     mvwprintw(win, 1, 1, "USER LIST");
     for (int c = 0; c < MAX_CLIENTS; c++) {
-        if (client_fds[c] > 0) {
+        if (strlen(client_names[c]) > 0 ) {
             refresh();
             mvwprintw(win, h, 1, "%s", client_names[c]);
-            h = 2;
+            h++
             wrefresh(win);
         }
     }
