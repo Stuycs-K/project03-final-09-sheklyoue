@@ -59,6 +59,7 @@ int handle_new_connection(int server_socket, int user_socket, int client_fds[], 
             user_fds[i] = new_user_socket;
             client_fds[i] = client_socket;
             strcpy(client_names[i], name);
+            // server side (for debug) 
             printf("Client [%s] connected\n", client_names[i]);
             break;
         }
@@ -82,7 +83,11 @@ void read_from_client(char message[], int fd, int client_fds[], char client_name
         for(int i = 0; i < MAX_CLIENTS; i++) {
             if (client_fds[i] == fd) {
                 client_fds[i] = 0;
+                // server side print message (for debugging)
                 printf("%s disconnected!\n", client_names[i]);
+
+                // send disconnect message to chat
+                sprintf(message, "\n%s left the chat :(\n\n", client_names[i]);
                 strcpy(client_names[i], "");
                 break;
             }
@@ -224,6 +229,3 @@ void display_message_prompt(WINDOW *message_win) {
     mvwprintw(message_win, 2, 1, "> ");
     wrefresh(message_win);
 }
-
-
-

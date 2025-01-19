@@ -41,6 +41,13 @@ This document must be updated daily by EACH group member.
 - need to have each client update messages automatically, without blokcing
 - need to do more debugging
 
+### 2025-01-16 - Merging
+- fixing merge conflicts with eric
+
+### 2025-01-17 - More issues
+- spent period reversing changes, not sure what happened
+- tried incorporating disconnect message on client side (need to fix)
+
 ## Eric
 
 ### 2025-01-08 - Organization and clear_terminal()

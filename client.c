@@ -84,7 +84,6 @@ int main(int argc, char *argv[])  {
     mvwprintw(chat_win, 1, 1, "Connected to server.");
     wrefresh(chat_win);
     char name[256];
-
     mvwprintw(message_win, 1, 1, "Please input your name: ");
     wrefresh(message_win);
     if (wgetstr(message_win, name) == 1) {
@@ -95,7 +94,11 @@ int main(int argc, char *argv[])  {
     }
     name[strlen(name)] = '\0';
 
-    write(client_socket, name, sizeof(name));
+    bytes = write(client_socket, name, sizeof(name));
+    if (bytes < 0) {
+        perror("fail to write user name to server");
+        exit(1);
+    }
 
     int chat = create_chat(name);
 
@@ -104,7 +107,15 @@ int main(int argc, char *argv[])  {
     FD_SET(user_socket, &readfds);
     FD_SET(STDIN_FILENO, &readfds);
     
-    int debug = 0;
+
+    // tell everyone new client connected
+    char connect_message[BUFFER_SIZE] = "joined the chat!\n";
+    bytes = write(client_socket, connect_message, strlen(connect_message) + 1);
+    if (bytes < 0) {
+        perror("client write connected error");
+        exit(1);
+    }
+
     while (1) {
         display_message_prompt(message_win);
         fd_set tempfds = readfds; 
@@ -133,9 +144,9 @@ int main(int argc, char *argv[])  {
             display_message_prompt(message_win);
         
             char buffer[256];
-            int bytesRead = recv(client_socket, buffer, sizeof(buffer), MSG_DONTWAIT);
-            if (bytesRead > 0) {
-                int bytes = write(chat, buffer, strlen(buffer));
+            bytes = recv(client_socket, buffer, sizeof(buffer), MSG_DONTWAIT);
+            if (bytes > 0) {
+                bytes = write(chat, buffer, strlen(buffer));
                 wprintw(message_win, "%s\n", buffer);
                 if (bytes < 0) {
                     perror("line 108 error");
@@ -160,8 +171,8 @@ int main(int argc, char *argv[])  {
                 display_message_prompt(message_win);
             }
 
-            int bytesWritten = write(client_socket, message, strlen(message) + 1);
-            if (bytesWritten < 0) {
+            bytes = write(client_socket, message, strlen(message) + 1);
+            if (bytes < 0) {
                 perror("client write error");
                 exit(1);
             }

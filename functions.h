@@ -20,7 +20,7 @@
 #define CHAT "chat.txt"
 #define update_signal 2222
 #define CHAT_PORT "9998"
-#define USER_PORT "0001"
+#define USER_PORT "9997"
 
 extern char client_names[MAX_CLIENTS][BUFFER_SIZE];
 extern int client_fds[MAX_CLIENTS];

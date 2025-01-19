@@ -47,7 +47,7 @@ int main() {
                 read_from_client(message, i, client_fds, client_names, &read_fds);
                 write_to_clients(message, client_fds);
             }
-
+            // keep names updated 
             for (int c = 0; c < MAX_CLIENTS; c++) {
                 if (client_fds[c] > 0) {
                     write(user_fds[c], client_names, sizeof(client_names));
