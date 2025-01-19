@@ -48,6 +48,14 @@ This document must be updated daily by EACH group member.
 - spent period reversing changes, not sure what happened
 - tried incorporating disconnect message on client side (need to fix)
 
+### 2025-01-19 user list (worked with eric)
+- created an extra socket to send username info
+- user list works when locally connected but when I connect from my computer to marge, the list prints gibbersh half the time
+- doesn't block when two users connect at the same time 
+- HOWEVER, you have to wait for the other client to input their name first in order to chat
+- client connect and disconnect messages (updated to all clients)
+- debugged for an hour and half
+
 ## Eric
 
 ### 2025-01-08 - Organization and clear_terminal()
@@ -90,3 +98,11 @@ This document must be updated daily by EACH group member.
 - chat works (messaging, chat is updating constantly)
 - next goal : add scrolling to chat window & get user panel working
 
+### 2025-01-19 user list (worked with lawrence)
+- created an extra socket to send username info
+- user list works when locally (on marge too) connected but when I connect from my computer to marge, the list prints gibbersh half the time
+  - couldn't test with lab machines becuase couldn't ssh
+- doesn't block when two users connect at the same time 
+- HOWEVER, you have to wait for the other client to input their name first in order to chat
+- client connect and disconnect messages (updated to all clients)
+- debugged for an hour and half
