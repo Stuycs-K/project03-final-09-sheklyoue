@@ -1,7 +1,10 @@
 #include "functions.h"
 
 int client_socket;
-struct addrinfo *res;
+int user_socket;
+
+struct addrinfo hints, *res;
+struct addrinfo hints2, *res2;
 
 WINDOW *chat_win;
 WINDOW *user_win;
@@ -10,6 +13,7 @@ WINDOW *message_win;
 static void sighandler(int signo) {
     close(client_socket);
     freeaddrinfo(res);
+    freeaddrinfo(res2);
     printf("Disconnected from server.\n");
     exit(0);
 }
@@ -20,26 +24,26 @@ int main(int argc, char *argv[])  {
     fd_set readfds;
 
     char client_names[MAX_CLIENTS][BUFFER_SIZE];
-    int client_fds[MAX_CLIENTS];
 
     chat_win = create_chat_win();
     user_win = create_user_win();
     message_win = create_message_win();
     refresh();
-    
-    struct addrinfo hints, *res;
+
     int bytes;
 
     if (argc != 2) {
         fprintf(stderr,"usage: ./client hostname\n");
         exit(1);
     }
+
+    // creating socket connection for messages 
     char *host = argv[1];
     memset(&hints, 0, sizeof(hints));
     hints.ai_family = AF_INET;
     hints.ai_socktype = SOCK_STREAM;
 
-    if (getaddrinfo(host, PORT, &hints, &res) != 0) {
+    if (getaddrinfo(host, CHAT_PORT, &hints, &res) != 0) {
         perror("getaddrinfo");
         return 1;
     }
@@ -53,6 +57,29 @@ int main(int argc, char *argv[])  {
     if (connect(client_socket, res->ai_addr, res->ai_addrlen) == -1) {
         perror("connect");
         close(client_socket);
+        return 1;
+    }
+
+    // creating socket connection from usernames
+    char *host2 = argv[1];
+    memset(&hints2, 0, sizeof(hints2));
+    hints2.ai_family = AF_INET;
+    hints2.ai_socktype = SOCK_STREAM;
+
+    if (getaddrinfo(host2, USER_PORT, &hints2, &res2) != 0) {
+        perror("getaddrinfo");
+        return 1;
+    }
+
+    user_socket = socket(res2->ai_family, res2->ai_socktype, res2->ai_protocol);
+    if (client_socket == -1) {
+        perror("socket");
+        return 1;
+    }
+
+    if (connect(user_socket, res2->ai_addr, res2->ai_addrlen) == -1) {
+        perror("connect");
+        close(user_socket);
         return 1;
     }
 
@@ -88,6 +115,7 @@ int main(int argc, char *argv[])  {
 
     FD_ZERO(&readfds);
     FD_SET(client_socket, &readfds);
+    FD_SET(user_socket, &readfds);
     FD_SET(STDIN_FILENO, &readfds);
     
 
@@ -108,9 +136,14 @@ int main(int argc, char *argv[])  {
             exit(1);
         }
 
+        if (FD_ISSET(user_socket, &tempfds)) {
+            read(user_socket, client_names, sizeof(client_names));
+            update_user_win(user_win, client_names);
+        }
+
         if (FD_ISSET(client_socket, &tempfds)) {
             display_message_prompt(message_win);
-            
+        
             char buffer[256];
             bytes = recv(client_socket, buffer, sizeof(buffer), MSG_DONTWAIT);
             if (bytes > 0) {
@@ -122,7 +155,7 @@ int main(int argc, char *argv[])  {
                 }
                 refresh();
                 clear_window(chat_win);
-                //update_user_win(user_win, client_fds, client_names);
+                //update_user_win(user_win, client_names);
                 print_chat(chat_win, name);
             } else {
                 printf("Server disconnected.\n");
