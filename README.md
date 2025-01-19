@@ -14,9 +14,9 @@ Our project is a simple group chat that allows for multiple people to join and k
 
 ## Video Link
   
-### Errors to Know
+## Errors to Know
 
-### Instructions:
+## Instructions:
 1. Once the repo is pulled, create a maximum of 25 terminals to connect to the chat. 
 2. Choose a terminal to act as the server and run:
 ```
