@@ -47,12 +47,6 @@ int handle_new_connection(int server_socket, int user_socket, int client_fds[], 
     int client_socket = server_connect(server_socket);
     int new_user_socket = server_connect(user_socket);
 
-    char welcome_message[256] = "Welcome to the chat!";
-    if (write(client_socket, welcome_message, sizeof(welcome_message)) < 0) {
-        perror("welcome message");
-        exit(1);
-    }
-
     char name[BUFFER_SIZE];
     if (read(client_socket, name, BUFFER_SIZE) < 0) {
         perror("read name");

@@ -83,16 +83,7 @@ int main(int argc, char *argv[])  {
 
     mvwprintw(chat_win, 1, 1, "Connected to server.");
     wrefresh(chat_win);
-    char welcome_message[256];
     char name[256];
-    bytes = read(client_socket, welcome_message, sizeof(welcome_message));
-    if (bytes < 0) {
-        perror("read welcome message");
-        exit(1);
-    }
-
-
-    wprintw(chat_win, "%s\n", welcome_message);
     mvwprintw(message_win, 1, 1, "Please input your name: ");
     wrefresh(message_win);
     if (wgetstr(message_win, name) == 1) {
