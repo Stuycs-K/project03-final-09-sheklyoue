@@ -89,7 +89,11 @@ void read_from_client(char message[], int fd, int client_fds[], char client_name
         for(int i = 0; i < MAX_CLIENTS; i++) {
             if (client_fds[i] == fd) {
                 client_fds[i] = 0;
+                // server side print message (for debugging)
                 printf("%s disconnected!\n", client_names[i]);
+
+                // send disconnect message to chat
+                sprintf(message, "\n%s left the chat :(\n\n", client_names[i]);
                 strcpy(client_names[i], "");
                 break;
             }

@@ -2,18 +2,9 @@
 
 int client_socket;
 struct addrinfo *res;
-char name[256];
 
 
 static void sighandler(int signo) {
-    char message[BUFFER_SIZE];
-    strcpy(message, name);
-    strcat(message, " disconnected.");
-    int bytes = write(client_socket, name, strlen(message) + 1);
-    if (bytes < 0) {
-        perror("send disconnect");
-        exit(1);
-    }
     close(client_socket);
     freeaddrinfo(res);
     printf("\nDisconnected from server.\n");
@@ -66,6 +57,7 @@ int main(int argc, char *argv[])  {
     mvwprintw(chat_win, 1, 1, "Connected to server.");
     wrefresh(chat_win);
     char welcome_message[256];
+    char name[256];
     bytes = read(client_socket, welcome_message, sizeof(welcome_message));
     if (bytes < 0) {
         perror("read welcome message");
