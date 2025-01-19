@@ -174,7 +174,7 @@ void update_user_win(WINDOW *win, char client_names[][BUFFER_SIZE]) {
     mvwprintw(win, 1, 1, "USER LIST");
     int h = 2;
     for (int c = 0; c < MAX_CLIENTS; c++) {
-        if (strlen(client_names[c]) > 0 ) {
+        if (client_names[c] != 0) {
             refresh();
             mvwprintw(win, h, 1, "%s", client_names[c]);
             h++;
