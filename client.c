@@ -59,23 +59,23 @@ int main(int argc, char *argv[])  {
     }
 
     // creating socket connection from usernames
-    char *host2 = argv[1];
-    memset(&hints2, 0, sizeof(hints2));
-    hints2.ai_family = AF_INET;
-    hints2.ai_socktype = SOCK_STREAM;
+    //char *host2 = argv[1];
+    //memset(&hints2, 0, sizeof(hints2));
+    //hints2.ai_family = AF_INET;
+    //hints2.ai_socktype = SOCK_STREAM;
 
-    if (getaddrinfo(host2, USER_PORT, &hints2, &res2) != 0) {
+    if (getaddrinfo(host, USER_PORT, &hints, &res) != 0) {
         perror("getaddrinfo");
         return 1;
     }
 
-    user_socket = socket(res2->ai_family, res2->ai_socktype, res2->ai_protocol);
+    user_socket = socket(res->ai_family, res->ai_socktype, res->ai_protocol);
     if (client_socket == -1) {
         perror("socket");
         return 1;
     }
 
-    if (connect(user_socket, res2->ai_addr, res2->ai_addrlen) == -1) {
+    if (connect(user_socket, res->ai_addr, res->ai_addrlen) == -1) {
         perror("connect");
         close(user_socket);
         return 1;
@@ -84,6 +84,7 @@ int main(int argc, char *argv[])  {
     mvwprintw(chat_win, 1, 1, "Connected to server.");
     wrefresh(chat_win);
     char name[256];
+
     mvwprintw(message_win, 1, 1, "Please input your name: ");
     wrefresh(message_win);
     if (wgetstr(message_win, name) == 1) {
@@ -94,11 +95,7 @@ int main(int argc, char *argv[])  {
     }
     name[strlen(name)] = '\0';
 
-    bytes = write(client_socket, name, sizeof(name));
-    if (bytes < 0) {
-        perror("fail to write user name to server");
-        exit(1);
-    }
+    write(client_socket, name, sizeof(name));
 
     int chat = create_chat(name);
 
@@ -107,15 +104,7 @@ int main(int argc, char *argv[])  {
     FD_SET(user_socket, &readfds);
     FD_SET(STDIN_FILENO, &readfds);
     
-
-    // tell everyone new client connected
-    char connect_message[BUFFER_SIZE] = "joined the chat!\n";
-    bytes = write(client_socket, connect_message, strlen(connect_message) + 1);
-    if (bytes < 0) {
-        perror("client write connected error");
-        exit(1);
-    }
-
+    int debug = 0;
     while (1) {
         display_message_prompt(message_win);
         fd_set tempfds = readfds; 
@@ -144,9 +133,9 @@ int main(int argc, char *argv[])  {
             display_message_prompt(message_win);
         
             char buffer[256];
-            bytes = recv(client_socket, buffer, sizeof(buffer), MSG_DONTWAIT);
-            if (bytes > 0) {
-                bytes = write(chat, buffer, strlen(buffer));
+            int bytesRead = recv(client_socket, buffer, sizeof(buffer), MSG_DONTWAIT);
+            if (bytesRead > 0) {
+                int bytes = write(chat, buffer, strlen(buffer));
                 wprintw(message_win, "%s\n", buffer);
                 if (bytes < 0) {
                     perror("line 108 error");
@@ -171,8 +160,8 @@ int main(int argc, char *argv[])  {
                 display_message_prompt(message_win);
             }
 
-            bytes = write(client_socket, message, strlen(message) + 1);
-            if (bytes < 0) {
+            int bytesWritten = write(client_socket, message, strlen(message) + 1);
+            if (bytesWritten < 0) {
                 perror("client write error");
                 exit(1);
             }
