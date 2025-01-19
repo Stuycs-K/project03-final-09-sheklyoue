@@ -177,7 +177,7 @@ void update_user_win(WINDOW *win, char client_names[][BUFFER_SIZE]) {
         if (strlen(client_names[c]) > 0 ) {
             refresh();
             mvwprintw(win, h, 1, "%s", client_names[c]);
-            h++
+            h++;
             wrefresh(win);
         }
     }

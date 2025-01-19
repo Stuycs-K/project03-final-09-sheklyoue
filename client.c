@@ -120,6 +120,7 @@ int main(int argc, char *argv[])  {
 
         if (FD_ISSET(user_socket, &tempfds)) {
             read(user_socket, client_names, sizeof(client_names));
+            update_user_win(user_win, client_names);
         }
 
         if (FD_ISSET(client_socket, &tempfds)) {
@@ -136,7 +137,7 @@ int main(int argc, char *argv[])  {
                 }
                 refresh();
                 clear_window(chat_win);
-                update_user_win(user_win, client_names);
+                //update_user_win(user_win, client_names);
                 print_chat(chat_win, name);
             } else {
                 printf("Server disconnected.\n");
