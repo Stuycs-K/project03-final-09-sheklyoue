@@ -5,13 +5,26 @@ group id: 17
 
 ### omegle v2
 
-Lawrence Shek, Li Han You
+### Team Members 
+- Lawrence Shek
+- Li Han You
        
-### Project Description:
-
-Explain what is this project.
+## Project Description:
+Our project is a simple group chat that allows for multiple people to join and keeps track of their names. The chat will display messages when people connect and disconnect and has a username list containing all of the present people in the chat.
   
-### Instructions:
+## Errors to Know
 
-How does the user install/compile/run the program.
-How does the user interact with this program?
+### Video Link
+
+### Instructions:
+1. Once the repo is pulled, create a maximum of 25 terminals to connect to the chat. 
+2. Choose a terminal to act as the server and run:
+```
+make compile
+./server
+```
+3. On all of the other terminals, run:
+```
+./client
+```
+4. This will start the chat and follow the instructions printed
