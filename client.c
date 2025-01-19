@@ -23,8 +23,6 @@ int main(int argc, char *argv[])  {
     signal(SIGINT, sighandler);
     fd_set readfds;
 
-    char client_names[MAX_CLIENTS][BUFFER_SIZE];
-
     chat_win = create_chat_win();
     user_win = create_user_win();
     message_win = create_message_win();
@@ -109,6 +107,7 @@ int main(int argc, char *argv[])  {
     FD_SET(user_socket, &readfds);
     FD_SET(STDIN_FILENO, &readfds);
     
+    int debug = 0;
     while (1) {
         display_message_prompt(message_win);
         fd_set tempfds = readfds; 
@@ -119,7 +118,17 @@ int main(int argc, char *argv[])  {
         }
 
         if (FD_ISSET(user_socket, &tempfds)) {
-            read(user_socket, client_names, sizeof(client_names));
+            char client_names[MAX_CLIENTS][BUFFER_SIZE];
+            memset(client_names, '\0', sizeof(client_names));
+            clear_window(user_win);
+            int bytes = read(user_socket, client_names, sizeof(client_names));
+            if (bytes == 0) {
+                perror("disconnected?");
+                exit(0);
+            } else if (bytes < 0) {
+                perror("EROROEOREOOREOROE AHGAHHHFHFAHHF");
+                exit(0);
+            }
             update_user_win(user_win, client_names);
         }
 
@@ -137,7 +146,6 @@ int main(int argc, char *argv[])  {
                 }
                 refresh();
                 clear_window(chat_win);
-                //update_user_win(user_win, client_names);
                 print_chat(chat_win, name);
             } else {
                 printf("Server disconnected.\n");
