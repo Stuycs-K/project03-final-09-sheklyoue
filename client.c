@@ -25,11 +25,7 @@ void update_user_list() {
     memset(client_names, '\0', sizeof(client_names));
     clear_window(user_win);
     int bytes = read(user_socket, client_names, sizeof(client_names));
-    if (bytes == 0) {
-        // perror("disconnected?");
-        return;
-    } 
-    else if (bytes < 0) {
+    if (bytes < 0) {
         perror("EROROEOREOOREOROE AHGAHHHFHFAHHF");
         exit(1);
     }
@@ -78,6 +74,7 @@ void handle_input() {
 int main(int argc, char *argv[])  {
     signal(SIGINT, sighandler);
     fd_set readfds;
+    int max_descriptor = 0;
 
     chat_win = create_chat_win();
     user_win = create_user_win();
@@ -165,6 +162,12 @@ int main(int argc, char *argv[])  {
     FD_SET(client_socket, &readfds);
     FD_SET(user_socket, &readfds);
     FD_SET(STDIN_FILENO, &readfds);
+    if (user_socket > client_socket) {
+        max_descriptor = user_socket;
+    }
+    else {
+        max_descriptor = client_socket;
+    }
     
     int debug = 0;
     char connect_message[BUFFER_SIZE] = "joined the chat!\n";
@@ -178,21 +181,24 @@ int main(int argc, char *argv[])  {
         display_message_prompt(message_win);
         fd_set tempfds = readfds; 
 
-        if (select(FD_SETSIZE, &tempfds, NULL, NULL, NULL) < 0) {
+        if (select(max_descriptor + 1, &tempfds, NULL, NULL, NULL) < 0) {
             perror("select() failed");
             exit(1);
         }
 
-        if (FD_ISSET(user_socket, &tempfds)) {
-            update_user_list();
-        }
-
-        if (FD_ISSET(client_socket, &tempfds)) {
-            update_chat(chat, name);
-        }
-
-        if (FD_ISSET(STDIN_FILENO, &tempfds)) {
-            handle_input();
+        for (int i = 0; i <= max_descriptor; i++) {
+            if (!FD_ISSET(i, &tempfds)) {
+                continue;
+            }
+            if (i == client_socket) {
+                update_chat(chat, name);
+            }
+            else if (i == user_socket) {
+                update_user_list();
+            }
+            else if (i == STDIN_FILENO) {
+                handle_input();
+            }
         }
     }
 

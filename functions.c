@@ -7,7 +7,7 @@ int server_setup(char* port_id) {
   hints->ai_family = AF_INET; // domain of socket (tpye of address)
   hints->ai_socktype = SOCK_STREAM; //TCP socket
   hints->ai_flags = AI_PASSIVE; //only needed on server
-  getaddrinfo(NULL, port_id, hints, &results);  //NULL is localhost or 127.0.0.1
+  getaddrinfo("0.0.0.0", port_id, hints, &results);  
 
   //create listen socket
   int listen_socket = socket(results->ai_family, results->ai_socktype, results->ai_protocol);
