@@ -105,6 +105,13 @@ int main(int argc, char *argv[])  {
     FD_SET(STDIN_FILENO, &readfds);
     
     int debug = 0;
+    char connect_message[BUFFER_SIZE] = "joined the chat!\n";
+    bytes = write(client_socket, connect_message, strlen(connect_message) + 1);
+    if (bytes < 0) {
+        perror("client write connected error");
+        exit(1);
+    }
+    
     while (1) {
         display_message_prompt(message_win);
         fd_set tempfds = readfds; 
