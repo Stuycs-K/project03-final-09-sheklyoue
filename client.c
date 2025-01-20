@@ -4,7 +4,7 @@ int client_socket;
 int user_socket;
 
 struct addrinfo hints, *res;
-struct addrinfo hints2, *res2;
+// struct addrinfo hints2, *res2;
 
 WINDOW *chat_win;
 WINDOW *user_win;
@@ -12,10 +12,66 @@ WINDOW *message_win;
 
 static void sighandler(int signo) {
     close(client_socket);
+    close(user_socket);
     freeaddrinfo(res);
-    freeaddrinfo(res2);
+    // freeaddrinfo(res2);
     printf("Disconnected from server.\n");
     exit(0);
+}
+
+
+void update_user_list() {
+    char client_names[MAX_CLIENTS][BUFFER_SIZE];
+    memset(client_names, '\0', sizeof(client_names));
+    clear_window(user_win);
+    int bytes = read(user_socket, client_names, sizeof(client_names));
+    if (bytes == 0) {
+        // perror("disconnected?");
+        return;
+    } 
+    else if (bytes < 0) {
+        perror("EROROEOREOOREOROE AHGAHHHFHFAHHF");
+        exit(1);
+    }
+    update_user_win(user_win, client_names);
+}
+
+
+void update_chat(int chat, char *name) {
+    display_message_prompt(message_win);
+
+    char buffer[256];
+    int bytes = recv(client_socket, buffer, sizeof(buffer), MSG_DONTWAIT);
+    if (bytes > 0) {
+        bytes = write(chat, buffer, strlen(buffer));
+        if (bytes < 0) {
+            perror("write to chat");
+            exit(1);
+        }
+        wprintw(message_win, "%s\n", buffer);
+        refresh();
+        clear_window(chat_win);
+        print_chat(chat_win, name);
+    } 
+    else {
+        printf("Server closed.\n");
+        delwin(chat_win);
+        delwin(user_win);
+        delwin(message_win);
+    }
+}
+
+void handle_input() {
+    display_message_prompt(message_win);
+    char message[BUFFER_SIZE];
+    if (wgetstr(message_win, message) == 0) {
+        display_message_prompt(message_win);
+    }
+    int bytes = write(client_socket, message, strlen(message) + 1);
+    if (bytes < 0) {
+        perror("client write error");
+        exit(1);
+    }
 }
 
 
@@ -48,12 +104,12 @@ int main(int argc, char *argv[])  {
 
     client_socket = socket(res->ai_family, res->ai_socktype, res->ai_protocol);
     if (client_socket == -1) {
-        perror("socket");
+        perror("client socket");
         return 1;
     }
 
     if (connect(client_socket, res->ai_addr, res->ai_addrlen) == -1) {
-        perror("connect");
+        perror("client connect");
         close(client_socket);
         return 1;
     }
@@ -70,21 +126,22 @@ int main(int argc, char *argv[])  {
     }
 
     user_socket = socket(res->ai_family, res->ai_socktype, res->ai_protocol);
-    if (client_socket == -1) {
-        perror("socket");
+    if (user_socket == -1) {
+        perror("user socket");
         return 1;
     }
 
     if (connect(user_socket, res->ai_addr, res->ai_addrlen) == -1) {
-        perror("connect");
+        perror("user connect");
         close(user_socket);
         return 1;
     }
 
+
     mvwprintw(chat_win, 1, 1, "Connected to server.");
     wrefresh(chat_win);
-    char name[256];
 
+    char name[256];
     mvwprintw(message_win, 1, 1, "Please input your name: ");
     wrefresh(message_win);
     if (wgetstr(message_win, name) == 1) {
@@ -95,7 +152,12 @@ int main(int argc, char *argv[])  {
     }
     name[strlen(name)] = '\0';
 
-    write(client_socket, name, sizeof(name));
+    bytes = write(client_socket, name, sizeof(name));
+    if (bytes < 0) {
+        perror("write username");
+        exit(1);
+    }
+
 
     int chat = create_chat(name);
 
@@ -111,7 +173,7 @@ int main(int argc, char *argv[])  {
         perror("client write connected error");
         exit(1);
     }
-    
+
     while (1) {
         display_message_prompt(message_win);
         fd_set tempfds = readfds; 
@@ -122,56 +184,15 @@ int main(int argc, char *argv[])  {
         }
 
         if (FD_ISSET(user_socket, &tempfds)) {
-            char client_names[MAX_CLIENTS][BUFFER_SIZE];
-            memset(client_names, '\0', sizeof(client_names));
-            clear_window(user_win);
-            int bytes = read(user_socket, client_names, sizeof(client_names));
-            if (bytes == 0) {
-                perror("disconnected?");
-                exit(0);
-            } else if (bytes < 0) {
-                perror("EROROEOREOOREOROE AHGAHHHFHFAHHF");
-                exit(0);
-            }
-            update_user_win(user_win, client_names);
+            update_user_list();
         }
 
         if (FD_ISSET(client_socket, &tempfds)) {
-            display_message_prompt(message_win);
-        
-            char buffer[256];
-            int bytesRead = recv(client_socket, buffer, sizeof(buffer), MSG_DONTWAIT);
-            if (bytesRead > 0) {
-                int bytes = write(chat, buffer, strlen(buffer));
-                wprintw(message_win, "%s\n", buffer);
-                if (bytes < 0) {
-                    perror("line 108 error");
-                    exit(1);
-                }
-                refresh();
-                clear_window(chat_win);
-                print_chat(chat_win, name);
-            } else {
-                printf("Server disconnected.\n");
-                delwin(chat_win);
-                delwin(user_win);
-                delwin(message_win);
-            }
-
+            update_chat(chat, name);
         }
 
         if (FD_ISSET(STDIN_FILENO, &tempfds)) {
-            display_message_prompt(message_win);
-            char message[BUFFER_SIZE];
-            if (wgetstr(message_win, message) == 0) {
-                display_message_prompt(message_win);
-            }
-
-            int bytesWritten = write(client_socket, message, strlen(message) + 1);
-            if (bytesWritten < 0) {
-                perror("client write error");
-                exit(1);
-            }
+            handle_input();
         }
     }
 
