@@ -28,7 +28,7 @@ make compile
 ```
 3. On all of the other terminals, run:
 ```
-./client (address)
+./client <hostname>
 ```
 
 3.1. If you want to run locally, run:
