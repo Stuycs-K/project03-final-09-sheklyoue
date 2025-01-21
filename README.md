@@ -13,7 +13,8 @@ omegle v2
 Our project is a simple chat server that allows up to 25 users to connect. The chat will display messages when people connect and disconnect and has a username list containing all of the present people in the chat.
 
 ## Video Link
-[Systems_Final_Project_Presentation](https://drive.google.com/drive/folders/1vfc27V8ZlNeRzdYNplDj3GIUbNcXlUd-?usp=sharing)
+[If you are using a personal email, use this link](https://drive.google.com/drive/folders/1vfc27V8ZlNeRzdYNplDj3GIUbNcXlUd-?usp=sharing)
+[If you are using @nycstudents.net email, use this link](https://drive.google.com/drive/folders/16HFcCR08AvItJJArvncwyC_0vRGYYKGL?usp=sharing)
 
 ## Errors to Know (We explain errors in the video)
 1. The user list only works when you are connected locally using 127.0.0.1 for some reason. When connected across different machines, the user list will work occasionally but most of the time it will print the correct list then print random characters over it.  
