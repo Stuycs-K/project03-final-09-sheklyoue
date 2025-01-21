@@ -10,7 +10,7 @@ omegle v2
 - Li Han You
        
 ## Project Description:
-Our project is a simple group chat that allows for multiple people to join and keeps track of their names. The chat will display messages when people connect and disconnect and has a username list containing all of the present people in the chat.
+Our project is a simple chat server that allows up to 25 users to connect. The chat will display messages when people connect and disconnect and has a username list containing all of the present people in the chat.
 
 ## Video Link
   
@@ -18,10 +18,10 @@ Our project is a simple group chat that allows for multiple people to join and k
 ## Errors to Know (We explain errors in the video)
 1. The user list only works when you are connected locally using 127.0.0.1 for some reason. When connected across different machines, the user list will work occasionally but most of the time it will print the correct list then print random characters over it.  
 2. When multiple people connect at the same time and the first person doesn't input their name in time, everyone has to input their name before the chat works.
-3. When you have a message ready to send in the message window, the chat will not update until you send that message.
+3. When you have a message ready to send in the message window, the chat will not update until you send that message (not able to send messages simultaneously).
 
 ## Instructions:
-1. Once the repo is pulled, create a maximum of 25 terminals to connect to the chat. Please note each client terminal needs to be at least 140x40
+1. Once the repo is pulled, create a maximum of 25 terminals to connect to the chat. Please note each client terminal needs to be at least 140x40 (also don't resize the window when running the client otherwise it breaks because of ncurses' fixed window sizes).
 2. Choose a terminal to act as the server and run:
 ```
 make compile
