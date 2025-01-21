@@ -29,18 +29,21 @@ Our project is a simple chat server that allows up to 25 users to connect. The c
 
 
 1. Once the repo is pulled, create a maximum of 25 terminals to connect to the chat. Please note each client terminal needs to be at least 140x40 (also don't resize the window when running the client otherwise it breaks because of ncurses' fixed window sizes).
-2. Choose a terminal to act as the server and run:
+2. Each program can be compiled using:
 ```
 make compile
-./server
 ```
-3. On all of the other terminals, run:
+3. After compiling, choose a machine to run the server on:
+```
+./server
+``` 
+3.1 On all of the other terminals, run:
 ```
 ./client <hostname>
 ```
 
-3.1. If you want to run locally, run:
+3.2. If you want to run locally, run:
 ```
 ./client 127.0.0.1
 ```
-4. This will start the chat on the client side and follow the instructions printed
+4. Once the client is connected, follow the instructions printed to use the chat server. Clients can disconnect using ctrl-c. 
