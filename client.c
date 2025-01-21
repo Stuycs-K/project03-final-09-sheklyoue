@@ -95,7 +95,7 @@ int main(int argc, char *argv[])  {
     }
     name[strlen(name)] = '\0';
 
-    write(client_socket, name, sizeof(name));
+    write(user_socket, name, sizeof(name));
 
     int chat = create_chat(name);
 
@@ -106,7 +106,7 @@ int main(int argc, char *argv[])  {
     
     int debug = 0;
     while (1) {
-        display_message_prompt(message_win);
+        //display_message_prompt(message_win);
         fd_set tempfds = readfds; 
 
         if (select(FD_SETSIZE, &tempfds, NULL, NULL, NULL) < 0) {
@@ -159,12 +159,18 @@ int main(int argc, char *argv[])  {
             if (wgetstr(message_win, message) == 0) {
                 display_message_prompt(message_win);
             }
-
+            
+            mvwprintw(message_win, 2, 7, "about tot write to server from client\n");
             int bytesWritten = write(client_socket, message, strlen(message) + 1);
             if (bytesWritten < 0) {
                 perror("client write error");
                 exit(1);
+            } else if (bytes > 0) {
+                mvwprintw(message_win, 1, 3, "wrote to server\n");
+            } else if (bytes == 0) {
+                mvwprintw(message_win, 3, 1, "did not wrote to server | message -> %s\n", message);
             }
+            wrefresh(message_win);
         }
     }
 

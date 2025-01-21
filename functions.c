@@ -48,6 +48,7 @@ int handle_new_connection(int server_socket, int user_socket, int client_fds[], 
     int new_user_socket = server_connect(user_socket);
 
     char name[BUFFER_SIZE];
+    //recv(client_socket, name, sizeof(name), MSG_DONTWAIT);
     if (read(client_socket, name, BUFFER_SIZE) < 0) {
         perror("read name");
         exit(1);
@@ -73,7 +74,7 @@ void read_from_client(char message[], int fd, int client_fds[], char client_name
     memset(buffer, 0, BUFFER_SIZE);
     int bytes;
 
-    bytes = read(fd, buffer, sizeof(buffer));
+    bytes = recv(fd, buffer, sizeof(buffer), MSG_DONTWAIT);
     if (bytes < 0) {
         // client disconnects
         return;

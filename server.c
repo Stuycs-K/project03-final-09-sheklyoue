@@ -35,6 +35,7 @@ int main() {
             if (i == server_socket) {
                 // accept new connection 
                 int client_socket = handle_new_connection(server_socket, user_socket, client_fds, client_names, user_fds);
+                printf("Added new client %d\n", client_socket);
                 // add socket to fdset
                 FD_SET(client_socket, &read_fds);
                 // update max_descriptor 
@@ -45,7 +46,9 @@ int main() {
             else {
                 char message[BUFFER_SIZE];
                 read_from_client(message, i, client_fds, client_names, &read_fds);
+                printf("read something from client\n");
                 write_to_clients(message, client_fds);
+                printf("wrote back to client\n");
             }
             // keep names updated 
             for (int c = 0; c < MAX_CLIENTS; c++) {
