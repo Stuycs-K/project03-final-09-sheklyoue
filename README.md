@@ -25,6 +25,7 @@ Our project is a simple chat server that allows up to 25 users to connect. The c
 #### External Libraries Used:
 - ncurses 
 
+
 1. Once the repo is pulled, create a maximum of 25 terminals to connect to the chat. Please note each client terminal needs to be at least 140x40 (also don't resize the window when running the client otherwise it breaks because of ncurses' fixed window sizes).
 2. Choose a terminal to act as the server and run:
 ```
