@@ -14,6 +14,7 @@ Our project is a simple chat server that allows up to 25 users to connect. The c
 
 ## Video Link
 [If you are using a personal email, use this link](https://drive.google.com/drive/folders/1vfc27V8ZlNeRzdYNplDj3GIUbNcXlUd-?usp=sharing)
+
 [If you are using @nycstudents.net email, use this link](https://drive.google.com/drive/folders/16HFcCR08AvItJJArvncwyC_0vRGYYKGL?usp=sharing)
 
 ## Errors to Know (We explain errors in the video)
