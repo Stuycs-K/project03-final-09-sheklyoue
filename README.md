@@ -20,7 +20,7 @@ Our project is a simple group chat that allows for multiple people to join and k
 2. When multiple people connect at the same time and the first person doesn't input their name in time, everyone has to input their name before the chat works.
 
 ## Instructions:
-1. Once the repo is pulled, create a maximum of 25 terminals to connect to the chat. 
+1. Once the repo is pulled, create a maximum of 25 terminals to connect to the chat. Please note each client terminal needs to be at least 140x40
 2. Choose a terminal to act as the server and run:
 ```
 make compile
